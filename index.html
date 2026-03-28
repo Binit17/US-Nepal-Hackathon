@@ -107,6 +107,9 @@
               <div class="greeting-name">Hey, Binit 👋</div>
             </div>
 
+            <!-- Cycle-Aware Card (rendered by JS) -->
+            <div id="cycle-card-container"></div>
+
             <!-- Mood Ring -->
             <div class="mood-ring-card">
               <div class="mood-ring-label">Today's Mood</div>
@@ -232,7 +235,7 @@
           </div>
           <div class="checkin-header">
             <h2>Afternoon Check-In</h2>
-            <p>How are you feeling right now?</p>
+            <p id="checkin-subtitle">How are you feeling right now?</p>
           </div>
           
           <div class="mode-tabs">
@@ -782,6 +785,58 @@
             <button class="tab-item active"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
             <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
           </div>
+        </div>
+
+        <!-- ====== CYCLE ONBOARDING SCREEN ====== -->
+        <div class="screen screen-cycle-onboarding" id="screen-cycle-onboarding">
+          <div class="cycle-onboarding-wrap">
+            <div class="cycle-onboard-icon">🌸</div>
+            <h2 class="cycle-onboard-title">One quick thing</h2>
+            <p class="cycle-onboard-body">Would you like <strong>cycle-aware mood insights</strong>? Daily can connect your hormonal phase to your energy, stress, and career performance — giving you more personalised support.</p>
+            <div class="cycle-onboard-card">
+              <div class="cycle-onboard-example">
+                <span class="cycle-onboard-phase-dot" style="background:#FF9500"></span>
+                <span><strong>Luteal phase?</strong> Daily lowers expectations and suggests rest.</span>
+              </div>
+              <div class="cycle-onboard-example">
+                <span class="cycle-onboard-phase-dot" style="background:#34D399"></span>
+                <span><strong>Follicular phase?</strong> Daily nudges you to take on bigger challenges.</span>
+              </div>
+              <div class="cycle-onboard-example">
+                <span class="cycle-onboard-phase-dot" style="background:#FBBF24"></span>
+                <span><strong>Ovulatory phase?</strong> Daily reminds you — schedule that presentation now.</span>
+              </div>
+            </div>
+            <p class="cycle-onboard-note">This works for anyone — tracking your own cycle or supporting someone you care about.</p>
+            <button class="cycle-onboard-yes" onclick="app.acceptCycleOnboarding()">Yes, set it up</button>
+            <button class="cycle-onboard-skip" onclick="app.skipCycleOnboarding()">Skip for now</button>
+          </div>
+        </div>
+
+        <!-- ====== CYCLE SETUP MODAL ====== -->
+        <div class="cycle-modal-overlay" id="cycle-modal-overlay" onclick="app.hideCycleSetup()"></div>
+        <div class="cycle-setup-modal" id="cycle-setup-modal">
+          <div class="cycle-modal-handle"></div>
+          <div class="cycle-modal-title">🌸 Cycle-Aware Insights</div>
+          <div class="cycle-modal-subtitle">Daily tailors your mental health support based on your hormonal phase — because career stress feels different depending on where you are in your cycle.</div>
+
+          <div class="cycle-modal-field">
+            <div class="cycle-modal-label">First day of your last period</div>
+            <input type="date" class="cycle-modal-input" id="cycle-date-input">
+          </div>
+
+          <div class="cycle-modal-field">
+            <div class="cycle-modal-label">Average cycle length</div>
+            <div class="cycle-length-row">
+              <div class="cycle-length-display" id="cycle-length-display">28</div>
+              <input type="range" class="cycle-length-slider" id="cycle-length-slider"
+                min="21" max="40" value="28"
+                oninput="document.getElementById('cycle-length-display').textContent = this.value">
+            </div>
+          </div>
+
+          <button class="cycle-modal-save" onclick="app.saveCycleData()">Save & Personalise</button>
+          <button class="cycle-modal-skip" onclick="app.dismissCyclePrompt()">Skip for now</button>
         </div>
 
       </div><!-- /iphone-screen -->
