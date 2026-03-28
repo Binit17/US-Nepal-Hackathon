@@ -186,7 +186,7 @@
             <button class="tab-item active" onclick="app.goHome()"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
             <button class="tab-item" onclick="app.goToScenario(2)"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
             <button class="tab-item" onclick="app.goToScenario(4)"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
-            <button class="tab-item" onclick="app.goToScenario(4)"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+            <button class="tab-item" onclick="app.goToRecommendations()"><div class="tab-icon">📚</div><div class="tab-label">Resources</div></button>
           </div>
         </div>
 
@@ -428,16 +428,56 @@
               </div>
             </div>
 
-            <button class="submit-btn" onclick="app.goHome()" style="width:100%; margin-top:8px">
+            <button class="submit-btn recs-btn" onclick="app.goToRecommendations()" style="width:100%; margin-top:8px">
+              📚 See Personalised Resources
+            </button>
+            <button class="submit-btn" onclick="app.goHome()" style="width:100%; margin-top:8px; background: var(--bg-primary); color: var(--text-secondary);">
               ← Back to Home
             </button>
           </div>
 
           <div class="tab-bar">
-            <button class="tab-item"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item" onclick="app.goHome()"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
             <button class="tab-item active"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
             <button class="tab-item"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
-            <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+            <button class="tab-item" onclick="app.goToRecommendations()"><div class="tab-icon">📚</div><div class="tab-label">Resources</div></button>
+          </div>
+        </div>
+
+        <!-- ====== RECOMMENDATIONS SCREEN ====== -->
+        <div class="screen screen-recommendations" id="screen-recommendations">
+          <div class="status-bar">
+            <span class="status-bar-time">3:52 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="recs-header">
+            <button class="back-btn" onclick="app.goHome()">‹ Back</button>
+            <span class="recs-title-text">For You</span>
+            <span style="width:50px"></span>
+          </div>
+
+          <div class="recs-content">
+            <!-- Detected mood banner -->
+            <div class="recs-mood-banner" id="recs-mood-banner"></div>
+
+            <!-- Cycle phase banner -->
+            <div class="recs-phase-banner" id="recs-phase-banner"></div>
+
+            <!-- Audience toggle -->
+            <div class="recs-toggle">
+              <button class="recs-toggle-btn active" id="toggle-student" onclick="app.switchAudience('student')">👨‍🎓 Student</button>
+              <button class="recs-toggle-btn" id="toggle-professional" onclick="app.switchAudience('professional')">👔 Professional</button>
+            </div>
+
+            <!-- Recommendation cards -->
+            <div id="recs-container"></div>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab-item" onclick="app.goHome()"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item" onclick="app.goToScenario(2)"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item" onclick="app.goToScenario(4)"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item active"><div class="tab-icon">📚</div><div class="tab-label">Resources</div></button>
           </div>
         </div>
 
