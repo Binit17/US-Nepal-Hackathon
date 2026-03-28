@@ -2585,6 +2585,71 @@ body {
 }
 
 /* ============================================
+   Nepal Stressor Cards
+   ============================================ */
+
+.stressor-section {
+  padding: 10px 20px 4px;
+}
+
+.stressor-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.stressor-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.stressor-card {
+  background: var(--bg-card);
+  border: 1.5px solid var(--ios-separator);
+  border-radius: var(--ios-radius);
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.stressor-card:active { transform: scale(0.97); }
+
+.stressor-card.active {
+  border-color: var(--primary);
+  background: rgba(124,92,252,0.08);
+}
+
+.stressor-emoji { font-size: 20px; }
+
+.stressor-text {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.3;
+}
+
+.stressor-card.active .stressor-text { color: var(--primary); }
+
+/* Nepal crisis resource highlight */
+.resource-nepal {
+  background: rgba(255, 0, 0, 0.04);
+  border-left: 3px solid #DC143C;
+  border-radius: 0 8px 8px 0;
+  padding-left: 8px;
+}
+
+/* ============================================
    Personalised Recommendations Screen
    ============================================ */
 

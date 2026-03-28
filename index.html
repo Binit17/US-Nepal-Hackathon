@@ -238,6 +238,29 @@
             <p id="checkin-subtitle">How are you feeling right now?</p>
           </div>
           
+          <!-- Nepal Stressor Cards -->
+          <div class="stressor-section">
+            <div class="stressor-label">What's weighing on you today?</div>
+            <div class="stressor-cards">
+              <button class="stressor-card" id="stressor-abroad" onclick="app.toggleStressor('abroad')">
+                <span class="stressor-emoji">🌏</span>
+                <span class="stressor-text">Abroad ko<br>Tension</span>
+              </button>
+              <button class="stressor-card" id="stressor-ghar" onclick="app.toggleStressor('ghar')">
+                <span class="stressor-emoji">🏠</span>
+                <span class="stressor-text">Ghar ko<br>Pressure</span>
+              </button>
+              <button class="stressor-card" id="stressor-exam" onclick="app.toggleStressor('exam')">
+                <span class="stressor-emoji">📚</span>
+                <span class="stressor-text">Board Exam<br>Pressure</span>
+              </button>
+              <button class="stressor-card" id="stressor-remittance" onclick="app.toggleStressor('remittance')">
+                <span class="stressor-emoji">💸</span>
+                <span class="stressor-text">Remittance<br>Burden</span>
+              </button>
+            </div>
+          </div>
+
           <div class="mode-tabs">
             <button class="mode-tab active" id="tab-video" onclick="app.switchCheckinMode('video')">🎥 Video</button>
             <button class="mode-tab" id="tab-audio" onclick="app.switchCheckinMode('audio')">🎙 Audio</button>
@@ -525,20 +548,30 @@
 
           <div class="emergency-resources">
             <h4>Crisis Resources</h4>
-            <div class="resource-item">
-              <span class="res-icon">📞</span>
-              <span class="res-name">Crisis Helpline Nepal</span>
+            <div class="resource-item resource-nepal">
+              <span class="res-icon">🇳🇵</span>
+              <span class="res-name">Nepal Mental Health Helpline</span>
               <span class="res-number">1166</span>
+            </div>
+            <div class="resource-item resource-nepal">
+              <span class="res-icon">🇳🇵</span>
+              <span class="res-name">Lifeline Nepal</span>
+              <span class="res-number">16600116611</span>
+            </div>
+            <div class="resource-item resource-nepal">
+              <span class="res-icon">🏥</span>
+              <span class="res-name">TPO Nepal</span>
+              <span class="res-number">tponepal.org</span>
+            </div>
+            <div class="resource-item">
+              <span class="res-icon">🇺🇸</span>
+              <span class="res-name">988 Suicide & Crisis Lifeline</span>
+              <span class="res-number">988</span>
             </div>
             <div class="resource-item">
               <span class="res-icon">💬</span>
               <span class="res-name">Crisis Text Line</span>
               <span class="res-number">Text HOME</span>
-            </div>
-            <div class="resource-item">
-              <span class="res-icon">🏥</span>
-              <span class="res-name">Nearest Mental Health Center</span>
-              <span class="res-number">Open Now</span>
             </div>
           </div>
 
