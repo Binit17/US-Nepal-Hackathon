@@ -55,8 +55,8 @@ Unlike the other demo scenarios, **Scenario 2 is fully functional**:
 ### 1. Clone & Setup Backend
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Daily.git
-cd Daily
+git clone https://github.com/Binit17/US-Nepal-Hackathon
+cd US-Nepal-Hackathon
 
 # Create Python virtual environment
 cd backend
