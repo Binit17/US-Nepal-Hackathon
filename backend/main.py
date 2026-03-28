@@ -1,4 +1,4 @@
-"""AuraBridge FastAPI Backend — Main application with village growth + trigger-aware AI."""
+"""Saathi FastAPI Backend — Main application with village growth + trigger-aware AI."""
 from __future__ import annotations
 
 import json as json_lib
@@ -65,7 +65,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="AuraBridge API",
+    title="Saathi API",
     description="AI-powered Gamified Mental Health Companion — Backend API",
     version="2.0.0",
     lifespan=lifespan,
@@ -314,7 +314,7 @@ async def get_trigger_profile():
 
 @app.get("/api/health")
 async def health():
-    return {"status": "healthy", "service": "AuraBridge API v2.0"}
+    return {"status": "healthy", "service": "Saathi API v2.0"}
 
 
 # ─── Daily App Check-In Analysis ───────────────────────────────────

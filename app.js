@@ -1,5 +1,5 @@
 /* ============================================
-   Daily – iOS Demo Prototype App Logic
+   Saathi – AI Mental Health Companion App Logic
    ============================================ */
 
 // ====== MULTI-MODAL CHECK-IN ENGINE ======
@@ -1308,7 +1308,7 @@ const app = {
   initCycle() {
     // Restore persisted cycle data
     try {
-      const saved = localStorage.getItem('daily_cycle');
+      const saved = localStorage.getItem('saathi_cycle');
       if (saved) {
         const data = JSON.parse(saved);
         this.cycleOnboardingDone = true;
@@ -1327,7 +1327,7 @@ const app = {
 
   saveCycleToStorage() {
     try {
-      localStorage.setItem('daily_cycle', JSON.stringify({
+      localStorage.setItem('saathi_cycle', JSON.stringify({
         dismissed: CycleEngine.dismissed,
         lastPeriodDate: CycleEngine.lastPeriodDate ? CycleEngine.lastPeriodDate.toISOString() : null,
         cycleLength: CycleEngine.cycleLength,
