@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily – AI Mental Health Companion</title>
+  <meta name="description" content="Daily is an AI-powered emotional journey companion that reduces career pressure, burnout, and uncertainty through proactive support, multi-modal check-ins, and smart safety nets.">
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="assets/icon.png">
+</head>
+<body>
+
+  <div class="presentation-wrapper">
+    <!-- Left: Scenario Navigation -->
+    <div>
+      <div class="app-title-section">
+        <h1>☀️ Daily</h1>
+        <p>Hackathon Demo</p>
+      </div>
+      <nav class="scenario-nav">
+        <button class="scenario-btn" onclick="app.goToScenario(0)" id="nav-s0">
+          <span class="btn-number">Scenario 0</span>
+          <span class="btn-title">🔒 Lock Screen Alert</span>
+          <span class="btn-desc">Smartwatch detects anxiety via HRV spike</span>
+        </button>
+        <button class="scenario-btn active" onclick="app.goToScenario(1)" id="nav-s1">
+          <span class="btn-number">Scenario 1</span>
+          <span class="btn-title">🛡️ Proactive Support</span>
+          <span class="btn-desc">Calendar + HRV intervention before a meeting</span>
+        </button>
+        <button class="scenario-btn" onclick="app.goToScenario(2)" id="nav-s2">
+          <span class="btn-number">Scenario 2</span>
+          <span class="btn-title">🎙️ Multi-Modal Check-In</span>
+          <span class="btn-desc">Video, audio, or text journaling with AI analysis</span>
+        </button>
+        <button class="scenario-btn" onclick="app.goToScenario(3)" id="nav-s3">
+          <span class="btn-number">Scenario 3</span>
+          <span class="btn-title">🚨 Safety Net & Recovery</span>
+          <span class="btn-desc">Emergency triggers and behavioral to-dos</span>
+        </button>
+        <button class="scenario-btn" onclick="app.goToScenario(4)" id="nav-s4">
+          <span class="btn-number">Insights</span>
+          <span class="btn-title">📊 Weekly Report</span>
+          <span class="btn-desc">CBT framework, mood graphs & behavior analysis</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Center: iPhone Frame -->
+    <div class="iphone-frame">
+      <div class="iphone-screen" id="iphone-screen">
+        <div class="dynamic-island"></div>
+
+        <!-- ====== LOCK SCREEN ====== -->
+        <div class="screen screen-lockscreen" id="screen-lockscreen">
+          <div class="lockscreen-bg">
+            <div class="lockscreen-status-bar">
+              <span class="ls-time-small">📶</span>
+              <span></span>
+              <span class="ls-time-small">🔋 72%</span>
+            </div>
+            <div class="lockscreen-clock">
+              <div class="ls-time">3:42</div>
+              <div class="ls-date">Friday, March 28</div>
+            </div>
+            <div class="lockscreen-notifications" id="ls-notifications">
+              <!-- Watch alert -->
+              <div class="ls-notif ls-notif-watch" id="ls-watch-notif">
+                <div class="ls-notif-icon ls-icon-watch">⌚</div>
+                <div class="ls-notif-body">
+                  <div class="ls-notif-appname">APPLE WATCH</div>
+                  <div class="ls-notif-title">High Heart Rate Alert</div>
+                  <div class="ls-notif-text">Your heart rate was 112 BPM while you appear to be inactive. HRV dropped to 28ms.</div>
+                </div>
+                <div class="ls-notif-time">2m ago</div>
+              </div>
+              <!-- Daily app alert appears after -->
+              <div class="ls-notif ls-notif-daily hidden" id="ls-daily-notif" onclick="app.goToScenario(1)">
+                <div class="ls-notif-icon ls-icon-daily">☀️</div>
+                <div class="ls-notif-body">
+                  <div class="ls-notif-appname">DAILY</div>
+                  <div class="ls-notif-title">Hey, are you okay? 💛</div>
+                  <div class="ls-notif-text">Your heart rate shows you might be feeling anxious right now. Would you like to talk about it?</div>
+                </div>
+                <div class="ls-notif-time">now</div>
+              </div>
+            </div>
+            <div class="lockscreen-bottom">
+              <div class="ls-flashlight">🔦</div>
+              <div class="ls-home-indicator"></div>
+              <div class="ls-camera">📷</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== HOME SCREEN ====== -->
+        <div class="screen screen-home active" id="screen-home">
+          <div class="status-bar">
+            <span class="status-bar-time">1:42 PM</span>
+            <span class="status-bar-icons">
+              <span>📶</span> <span>🔋</span>
+            </span>
+          </div>
+          <div class="home-content">
+            <div class="greeting-section">
+              <div class="greeting-label">Good Afternoon</div>
+              <div class="greeting-name">Hey, Binit 👋</div>
+            </div>
+
+            <!-- Mood Ring -->
+            <div class="mood-ring-card">
+              <div class="mood-ring-label">Today's Mood</div>
+              <div class="mood-ring-status">Feeling a bit anxious</div>
+              <div class="mood-ring-detail">Based on your morning check-in & HRV data</div>
+              <div class="mood-emojis">
+                <span>😰</span><span>😤</span><span>😓</span>
+              </div>
+            </div>
+
+            <!-- HRV Card -->
+            <div class="hrv-card">
+              <div class="hrv-icon">❤️</div>
+              <div class="hrv-info">
+                <h3>Heart Rate Variability</h3>
+                <div class="hrv-value">42 <span>ms</span></div>
+                <div class="hrv-status">⚠️ Below your baseline (58ms)</div>
+              </div>
+            </div>
+
+            <!-- Calendar -->
+            <div class="calendar-card">
+              <div class="calendar-card-header">
+                <h3>📅 Today</h3>
+                <span>March 28</span>
+              </div>
+              <div class="calendar-event">
+                <div class="event-time">
+                  <div class="time">2:00</div>
+                  <div class="period">PM</div>
+                </div>
+                <div class="event-details">
+                  <h4>Final Project Defense</h4>
+                  <p>Conference Room B · Prof. Sharma</p>
+                  <div class="event-alert">⚡ High-stakes event detected</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions-title">How are you feeling?</div>
+            <div class="quick-actions">
+              <button class="quick-action-btn action-video" onclick="app.goToScenario(2)">
+                <div class="action-icon">🎥</div>
+                <div class="action-label">Video</div>
+              </button>
+              <button class="quick-action-btn action-audio" onclick="app.goToScenario(2)">
+                <div class="action-icon">🎙️</div>
+                <div class="action-label">Audio</div>
+              </button>
+              <button class="quick-action-btn action-text" onclick="app.goToScenario(3)">
+                <div class="action-icon">✏️</div>
+                <div class="action-label">Text</div>
+              </button>
+            </div>
+
+            <!-- Weekly mood -->
+            <div class="section-title">This Week</div>
+            <div class="weekly-mood">
+              <div class="weekly-mood-row">
+                <div class="day-mood"><div class="day-label">Mon</div><div class="day-emoji">😊</div></div>
+                <div class="day-mood"><div class="day-label">Tue</div><div class="day-emoji">😐</div></div>
+                <div class="day-mood"><div class="day-label">Wed</div><div class="day-emoji">😊</div></div>
+                <div class="day-mood"><div class="day-label">Thu</div><div class="day-emoji">😟</div></div>
+                <div class="day-mood today"><div class="day-label">Fri</div><div class="day-emoji">😰</div></div>
+                <div class="day-mood"><div class="day-label">Sat</div><div class="day-emoji">—</div></div>
+                <div class="day-mood"><div class="day-label">Sun</div><div class="day-emoji">—</div></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div class="tab-bar">
+            <button class="tab-item active" onclick="app.goHome()"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item" onclick="app.goToScenario(2)"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item" onclick="app.goToScenario(4)"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item" onclick="app.goToScenario(4)"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+          </div>
+        </div>
+
+        <!-- ====== NOTIFICATION OVERLAY ====== -->
+        <div class="notification-overlay" id="notif-overlay">
+          <div class="notification-banner" onclick="app.showBreathing()">
+            <div class="notif-icon">☀️</div>
+            <div class="notif-content">
+              <div class="notif-app-name">Daily</div>
+              <div class="notif-title">Your meeting is in 15 min ⏰</div>
+              <div class="notif-body">Your HRV indicates rising stress. Take 60 seconds for a breathing exercise?</div>
+            </div>
+            <div class="notif-time">now</div>
+          </div>
+        </div>
+
+        <!-- ====== BREATHING EXERCISE SCREEN ====== -->
+        <div class="screen screen-breathing" id="screen-breathing">
+          <div class="breathing-nav">
+            <button class="back-btn" onclick="app.goHome()">‹ Back</button>
+            <span class="breathing-title-text">Box Breathing</span>
+            <span style="width:50px"></span>
+          </div>
+          <div class="breathing-container">
+            <div class="breathing-circle-wrapper">
+              <div class="breathing-circle" id="breathing-circle">
+                <div class="breathing-label" id="breathing-label">Start</div>
+              </div>
+            </div>
+            <div class="breathing-timer" id="breathing-timer">4</div>
+            <div class="breathing-instruction" id="breathing-instruction">Tap the circle to begin</div>
+            <div class="breathing-progress" id="breathing-progress">
+              <div class="breath-dot"></div>
+              <div class="breath-dot"></div>
+              <div class="breath-dot"></div>
+              <div class="breath-dot"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== CHECK-IN SCREEN (Scenario 2) ====== -->
+        <div class="screen screen-checkin" id="screen-checkin">
+          <div class="status-bar">
+            <span class="status-bar-time">3:47 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="checkin-header">
+            <h2>Afternoon Check-In</h2>
+            <p>How are you feeling right now?</p>
+          </div>
+          
+          <div class="mode-tabs">
+            <button class="mode-tab active" id="tab-video" onclick="app.switchCheckinMode('video')">🎥 Video</button>
+            <button class="mode-tab" id="tab-audio" onclick="app.switchCheckinMode('audio')">🎙 Audio</button>
+            <button class="mode-tab" id="tab-text" onclick="app.switchCheckinMode('text')">✏️ Text</button>
+          </div>
+
+          <div class="video-view" id="checkin-video-view">
+            <div class="camera-viewfinder" id="camera-viewfinder">
+              <video id="camera-video" autoplay playsinline muted></video>
+              <div class="camera-placeholder" id="camera-placeholder">
+                <div class="user-silhouette">👤</div>
+                <div class="camera-init-text">Initializing camera...</div>
+              </div>
+              <div class="rec-indicator" id="rec-indicator">
+                <div class="rec-dot"></div>
+                <span>REC</span>
+              </div>
+              <span class="rec-time" id="rec-time"></span>
+              <!-- Real-time biomarker overlay -->
+              <div class="biomarker-overlay hidden" id="biomarker-overlay">
+                <div class="bio-chip" id="bio-emotion-chip">
+                  <span class="bio-emoji" id="bio-emotion-emoji">😐</span>
+                  <span class="bio-value" id="bio-emotion-label">Neutral</span>
+                </div>
+                <div class="bio-chip" id="bio-vocal-chip">
+                  <span class="bio-emoji">🎵</span>
+                  <span class="bio-value" id="bio-vocal-label">—</span>
+                </div>
+                <div class="bio-chip" id="bio-eye-chip">
+                  <span class="bio-emoji">👁️</span>
+                  <span class="bio-value" id="bio-eye-label">—</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="record-btn-wrapper">
+              <button class="record-btn" id="record-btn" onclick="app.toggleRecording()">
+                <div class="record-btn-inner"></div>
+              </button>
+            </div>
+            <div class="video-caption" id="video-caption">Tap to start recording</div>
+
+            <!-- Live transcript -->
+            <div class="live-transcript hidden" id="live-transcript">
+              <div class="transcript-label">📝 Live Transcription</div>
+              <div class="transcript-text" id="transcript-text">Listening...</div>
+            </div>
+          </div>
+
+          <!-- Audio-only mode -->
+          <div class="audio-view hidden" id="checkin-audio-view">
+            <div class="audio-waveform-area">
+              <canvas id="audio-waveform-canvas" width="300" height="120"></canvas>
+              <div class="audio-status" id="audio-status">Tap to start recording</div>
+            </div>
+            <div class="record-btn-wrapper">
+              <button class="record-btn" id="audio-record-btn" onclick="app.toggleRecording()">
+                <div class="record-btn-inner"></div>
+              </button>
+            </div>
+            <div class="live-transcript hidden" id="audio-live-transcript">
+              <div class="transcript-label">📝 Live Transcription</div>
+              <div class="transcript-text" id="audio-transcript-text">Listening...</div>
+            </div>
+          </div>
+
+          <div style="padding: 16px 20px">
+            <button class="submit-btn hidden" id="submit-video-btn" onclick="app.analyzeVideo()" style="width:100%">
+              ✨ Analyze with AI
+            </button>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab-item"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item active"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+          </div>
+        </div>
+
+        <!-- ====== AI ANALYSIS SCREEN ====== -->
+        <div class="screen screen-analysis" id="screen-analysis">
+          <div class="analysis-container">
+            <div class="analysis-brain">🧠</div>
+            <div class="analysis-title">Analyzing Your Entry</div>
+            <div class="analysis-subtitle">Processing multi-modal signals...</div>
+            
+            <div class="analysis-steps">
+              <div class="analysis-step" id="step-facial">
+                <div class="step-icon facial">😔</div>
+                <div class="step-text">
+                  <h4>Facial Affect Detection</h4>
+                  <p>Scanning expressions...</p>
+                </div>
+                <div class="step-check">✅</div>
+              </div>
+              <div class="analysis-step" id="step-voice">
+                <div class="step-icon voice">🎵</div>
+                <div class="step-text">
+                  <h4>Voice Tone Analysis</h4>
+                  <p>Analyzing vocal patterns...</p>
+                </div>
+                <div class="step-check">✅</div>
+              </div>
+              <div class="analysis-step" id="step-sentiment">
+                <div class="step-icon sentiment">📊</div>
+                <div class="step-text">
+                  <h4>Sentiment Processing</h4>
+                  <p>Understanding context...</p>
+                </div>
+                <div class="step-check">✅</div>
+              </div>
+              <div class="analysis-step" id="step-journal">
+                <div class="step-icon journal">📔</div>
+                <div class="step-text">
+                  <h4>Memory Journal Entry</h4>
+                  <p>Creating personalized entry...</p>
+                </div>
+                <div class="step-check">✅</div>
+              </div>
+            </div>
+            
+            <div class="progress-bar">
+              <div class="progress-fill" id="analysis-progress" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ====== RESULTS SCREEN ====== -->
+        <div class="screen screen-results" id="screen-results">
+          <div class="status-bar">
+            <span class="status-bar-time">3:49 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="results-header">
+            <h2>AI Analysis Complete</h2>
+            <p>Here's what I've captured</p>
+          </div>
+          <div class="results-content">
+            <!-- Emotion Breakdown -->
+            <div class="emotion-card">
+              <div class="emotion-card-title">Emotional Breakdown</div>
+              <div id="emotion-bars-container">
+                <div class="emotion-bar">
+                  <span class="emotion-label">😩 Tiredness</span>
+                  <div class="emotion-track"><div class="emotion-fill tiredness"></div></div>
+                  <span class="emotion-pct">85%</span>
+                </div>
+                <div class="emotion-bar">
+                  <span class="emotion-label">😢 Sadness</span>
+                  <div class="emotion-track"><div class="emotion-fill sadness"></div></div>
+                  <span class="emotion-pct">72%</span>
+                </div>
+                <div class="emotion-bar">
+                  <span class="emotion-label">😤 Stress</span>
+                  <div class="emotion-track"><div class="emotion-fill stress"></div></div>
+                  <span class="emotion-pct">63%</span>
+                </div>
+                <div class="emotion-bar">
+                  <span class="emotion-label">😌 Calm</span>
+                  <div class="emotion-track"><div class="emotion-fill calm"></div></div>
+                  <span class="emotion-pct">20%</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Detected Tags -->
+            <div class="emotion-card">
+              <div class="emotion-card-title">Detected Patterns</div>
+              <div class="tags-row" id="patterns-container">
+                <span class="tag tag-burnout">🔥 Burnout</span>
+                <span class="tag tag-workload">📋 Overwork</span>
+                <span class="tag tag-fatigue">😴 Fatigue</span>
+                <span class="tag tag-low-energy">⚡ Low Energy</span>
+              </div>
+            </div>
+
+            <!-- Journal Entry -->
+            <div class="journal-entry-card">
+              <h3>📔 Memory Journal</h3>
+              <div class="journal-timestamp" id="journal-timestamp">March 28, 2026 · 3:47 PM · Video Entry</div>
+              <div class="journal-summary" id="journal-summary">
+                Binit recorded a video entry after a demanding work block. He expressed feeling drained from continuous meetings and an unmanageable workload. Facial analysis detected signs of exhaustion and sadness. Voice tone was flat and low-energy. <strong>AI recommends reducing workload tomorrow and scheduling a recovery activity.</strong>
+              </div>
+              <div class="journal-mood-tags" id="journal-mood-tags">
+                <span class="tag tag-burnout" style="font-size:11px">🔥 Burnout risk</span>
+                <span class="tag tag-fatigue" style="font-size:11px">Auto-tagged</span>
+              </div>
+            </div>
+
+            <button class="submit-btn" onclick="app.goHome()" style="width:100%; margin-top:8px">
+              ← Back to Home
+            </button>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab-item"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item active"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+          </div>
+        </div>
+
+        <!-- ====== TEXT INPUT SCREEN (Scenario 3) ====== -->
+        <div class="screen screen-text-input" id="screen-text-input">
+          <div class="status-bar">
+            <span class="status-bar-time">10:38 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="text-input-header">
+            <button class="back-btn" style="color:var(--ios-blue); margin-bottom:10px" onclick="app.goHome()">‹ Home</button>
+            <h2>Evening Check-In</h2>
+            <p>Write how you're feeling tonight</p>
+          </div>
+          
+          <div class="text-input-area">
+            <textarea class="journal-textarea" id="journal-textarea" placeholder="I'm feeling..."
+            >I don't see the point anymore. Everything feels hopeless and I just want it all to stop. Nobody would even notice if I wasn't here tomorrow...</textarea>
+          </div>
+          
+          <div class="text-input-footer">
+            <span class="char-count">148 characters</span>
+            <button class="submit-btn" id="submit-text-btn" onclick="app.submitText()">Submit</button>
+          </div>
+        </div>
+
+        <!-- ====== EMERGENCY ALERT SCREEN ====== -->
+        <div class="screen screen-emergency" id="screen-emergency">
+          <div class="emergency-pulse">
+            <div class="emergency-icon">🫶</div>
+          </div>
+          <div class="emergency-title">We're Here For You</div>
+          <div class="emergency-message">
+            It sounds like you're going through a really hard time. <strong>You are not alone.</strong> I've reached out to your emergency contact and here are some resources.
+          </div>
+          
+          <div class="emergency-contact-card">
+            <div class="contact-avatar">RS</div>
+            <div class="contact-info">
+              <h4>Rajan Sharma</h4>
+              <p>Emergency Contact · Brother</p>
+            </div>
+            <div class="contact-status">Notified</div>
+          </div>
+
+          <div class="emergency-resources">
+            <h4>Crisis Resources</h4>
+            <div class="resource-item">
+              <span class="res-icon">📞</span>
+              <span class="res-name">Crisis Helpline Nepal</span>
+              <span class="res-number">1166</span>
+            </div>
+            <div class="resource-item">
+              <span class="res-icon">💬</span>
+              <span class="res-name">Crisis Text Line</span>
+              <span class="res-number">Text HOME</span>
+            </div>
+            <div class="resource-item">
+              <span class="res-icon">🏥</span>
+              <span class="res-name">Nearest Mental Health Center</span>
+              <span class="res-number">Open Now</span>
+            </div>
+          </div>
+
+          <button class="emergency-dismiss" onclick="app.showRecovery()">I'm feeling a bit better →</button>
+        </div>
+
+        <!-- ====== RECOVERY / TO-DO SCREEN ====== -->
+        <div class="screen screen-recovery" id="screen-recovery">
+          <div class="status-bar">
+            <span class="status-bar-time">10:42 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="recovery-header">
+            <div class="recovery-emoji">🌱</div>
+            <h2>Tomorrow is a New Day</h2>
+            <p>You've had a heavy day. I've prepared some things to help you reset.</p>
+          </div>
+          <div class="recovery-content">
+            <div class="recovery-message-card">
+              <div class="ai-label">✨ Daily AI · End of Day Reflection</div>
+              <div class="ai-message">
+                "Hey Binit, I want you to know — today was <strong>one of those really hard days</strong>, and I see that. Your morning started with tension; your HRV was already low at 42ms before your Final Project Defense at 2 PM. That takes a lot of mental energy, and your body was already telling us you were carrying stress.
+                <br><br>
+                After the defense, your video check-in showed real exhaustion — your voice was quieter than usual, and your facial expressions reflected deep tiredness. That's completely natural after a high-pressure day.
+                <br><br>
+                I also noticed that your stress levels stayed elevated through the evening, which is unusual for you based on the last 3 weeks of data. On most days, your stress drops after 7 PM, but today it didn't. <strong>That tells me you need a proper reset tonight.</strong>
+                <br><br>
+                Here's what I want you to remember: <strong>feeling drained doesn't mean you're failing.</strong> You showed up for the defense, you were honest in your check-in, and you're here right now. That counts for a lot.
+                <br><br>
+                I've put together a recovery plan for tomorrow that's based on what's worked best for you in the past. On days when you took a morning walk and limited screen time before 9 AM, your mood scores were 40% higher by the afternoon.
+                <br><br>
+                Sleep well tonight, Binit. 🌙 You've earned the rest."
+              </div>
+            </div>
+
+            <div class="recovery-day-summary">
+              <div class="summary-title">📊 Today's Emotional Summary</div>
+              <div class="summary-stats">
+                <div class="summary-stat">
+                  <div class="stat-value">3</div>
+                  <div class="stat-label">Check-ins</div>
+                </div>
+                <div class="summary-stat">
+                  <div class="stat-value">😰</div>
+                  <div class="stat-label">Dominant</div>
+                </div>
+                <div class="summary-stat">
+                  <div class="stat-value">42ms</div>
+                  <div class="stat-label">Avg HRV</div>
+                </div>
+                <div class="summary-stat">
+                  <div class="stat-value">7.2</div>
+                  <div class="stat-label">Stress /10</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="todo-card">
+              <h3>📋 Tomorrow's Recovery Plan</h3>
+              <div class="todo-item">
+                <div class="todo-checkbox"></div>
+                <div class="todo-text">
+                  <h4>🌅 15-minute Morning Walk</h4>
+                  <p>7:30 AM · Fresh air & sunlight — your best mood booster</p>
+                </div>
+              </div>
+              <div class="todo-item">
+                <div class="todo-checkbox"></div>
+                <div class="todo-text">
+                  <h4>🧘 5-min Guided Meditation</h4>
+                  <p>8:00 AM · Calm your mind before the day starts</p>
+                </div>
+              </div>
+              <div class="todo-item">
+                <div class="todo-checkbox"></div>
+                <div class="todo-text">
+                  <h4>📵 No screens before 9 AM</h4>
+                  <p>Based on your data, this improves your afternoon mood by 40%</p>
+                </div>
+              </div>
+              <div class="todo-item">
+                <div class="todo-checkbox"></div>
+                <div class="todo-text">
+                  <h4>📱 Call Rajan during lunch</h4>
+                  <p>12:30 PM · Reconnect with someone who cares</p>
+                </div>
+              </div>
+              <div class="todo-item">
+                <div class="todo-checkbox"></div>
+                <div class="todo-text">
+                  <h4>🎵 Listen to your calm playlist</h4>
+                  <p>Evening · Wind down with music that helped before</p>
+                </div>
+              </div>
+              <div class="todo-reminders-badge">
+                <span>✅</span>
+                <span>Added to iOS Reminders · Synced with Apple Watch</span>
+              </div>
+            </div>
+
+            <button class="submit-btn" onclick="app.goHome()" style="width:100%">
+              ← Back to Home
+            </button>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab-item"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+          </div>
+        </div>
+
+        <!-- ====== WEEKLY REPORT SCREEN ====== -->
+        <div class="screen screen-weekly" id="screen-weekly">
+          <div class="status-bar">
+            <span class="status-bar-time">7:15 PM</span>
+            <span class="status-bar-icons"><span>📶</span> <span>🔋</span></span>
+          </div>
+          <div class="weekly-header">
+            <button class="back-btn" style="color:var(--ios-blue)" onclick="app.goHome()">‹ Home</button>
+            <h2>Weekly Insights</h2>
+            <p>March 22 – 28, 2026</p>
+          </div>
+          <div class="weekly-content">
+            <!-- Mood Trend Chart -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>😊 Mood Trend</h3>
+                <span class="chart-badge badge-down">↓ 12% from last week</span>
+              </div>
+              <canvas id="chart-mood" width="310" height="160"></canvas>
+            </div>
+
+            <!-- HRV Chart -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>❤️ HRV Over Time</h3>
+                <span class="chart-badge badge-warn">Below baseline 3 days</span>
+              </div>
+              <canvas id="chart-hrv" width="310" height="160"></canvas>
+            </div>
+
+            <!-- CBT Distortion Breakdown -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>🧠 CBT Cognitive Distortions</h3>
+                <span class="chart-badge">AI-detected this week</span>
+              </div>
+              <div class="cbt-list">
+                <div class="cbt-item">
+                  <div class="cbt-info">
+                    <span class="cbt-name">Catastrophizing</span>
+                    <span class="cbt-count">7 times</span>
+                  </div>
+                  <div class="cbt-bar"><div class="cbt-fill" style="width:85%; background: linear-gradient(90deg, #FF3B30, #FF6B8A)"></div></div>
+                </div>
+                <div class="cbt-item">
+                  <div class="cbt-info">
+                    <span class="cbt-name">All-or-Nothing Thinking</span>
+                    <span class="cbt-count">5 times</span>
+                  </div>
+                  <div class="cbt-bar"><div class="cbt-fill" style="width:62%; background: linear-gradient(90deg, #FF9500, #FFCC00)"></div></div>
+                </div>
+                <div class="cbt-item">
+                  <div class="cbt-info">
+                    <span class="cbt-name">Mind Reading</span>
+                    <span class="cbt-count">3 times</span>
+                  </div>
+                  <div class="cbt-bar"><div class="cbt-fill" style="width:38%; background: linear-gradient(90deg, #007AFF, #5AC8FA)"></div></div>
+                </div>
+                <div class="cbt-item">
+                  <div class="cbt-info">
+                    <span class="cbt-name">Overgeneralization</span>
+                    <span class="cbt-count">2 times</span>
+                  </div>
+                  <div class="cbt-bar"><div class="cbt-fill" style="width:25%; background: linear-gradient(90deg, #34C759, #30D158)"></div></div>
+                </div>
+                <div class="cbt-item">
+                  <div class="cbt-info">
+                    <span class="cbt-name">Emotional Reasoning</span>
+                    <span class="cbt-count">2 times</span>
+                  </div>
+                  <div class="cbt-bar"><div class="cbt-fill" style="width:25%; background: linear-gradient(90deg, #AF52DE, #BF5AF2)"></div></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Emotion Distribution -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>🎯 Emotion Distribution</h3>
+                <span class="chart-badge">From all check-ins</span>
+              </div>
+              <canvas id="chart-emotions" width="310" height="180"></canvas>
+            </div>
+
+            <!-- Stats Row -->
+            <div class="stats-grid">
+              <div class="stat-card">
+                <div class="stat-card-value">12</div>
+                <div class="stat-card-label">Check-ins</div>
+                <div class="stat-card-change up">↑ 3</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-value">4.2</div>
+                <div class="stat-card-label">Avg Mood</div>
+                <div class="stat-card-change down">↓ 0.8</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-value">48ms</div>
+                <div class="stat-card-label">Avg HRV</div>
+                <div class="stat-card-change down">↓ 10</div>
+              </div>
+              <div class="stat-card">
+                <div class="stat-card-value">85%</div>
+                <div class="stat-card-label">Streak</div>
+                <div class="stat-card-change up">↑ 5%</div>
+              </div>
+            </div>
+
+            <!-- Behavior Analysis -->
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>🔍 Behavior Analysis</h3>
+                <span class="chart-badge">AI Insights</span>
+              </div>
+              <div class="behavior-insights">
+                <div class="behavior-item">
+                  <div class="bh-icon">📱</div>
+                  <div class="bh-content">
+                    <h4>Screen Time Correlation</h4>
+                    <p>On days you use your phone <strong>&gt;4 hours</strong>, your evening mood drops by <strong>35%</strong>. This week: 3 out of 5 days exceeded this threshold.</p>
+                  </div>
+                </div>
+                <div class="behavior-item">
+                  <div class="bh-icon">🏃</div>
+                  <div class="bh-content">
+                    <h4>Exercise Impact</h4>
+                    <p>You averaged <strong>2,400 steps/day</strong> this week (down from 5,100 last week). Low activity correlates with <strong>28% lower mood scores</strong> in your data.</p>
+                  </div>
+                </div>
+                <div class="behavior-item">
+                  <div class="bh-icon">😴</div>
+                  <div class="bh-content">
+                    <h4>Sleep Quality Pattern</h4>
+                    <p>Your average sleep was <strong>5.2 hours</strong> (recommended: 7–8h). Poor sleep on Mon & Wed preceded your worst mood days (Tue & Thu).</p>
+                  </div>
+                </div>
+                <div class="behavior-item">
+                  <div class="bh-icon">📅</div>
+                  <div class="bh-content">
+                    <h4>Calendar Stress Pattern</h4>
+                    <p>You had <strong>14 meetings</strong> this week. Days with &gt;3 meetings consistently showed <strong>elevated stress</strong> and lower HRV by evening.</p>
+                  </div>
+                </div>
+                <div class="behavior-item">
+                  <div class="bh-icon">🧠</div>
+                  <div class="bh-content">
+                    <h4>Journaling Timing</h4>
+                    <p>Your most honest and detailed entries happen between <strong>9–11 PM</strong>. Consider setting your main check-in for this window.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="chart-card">
+              <div class="chart-card-header">
+                <h3>💡 AI Recommendation</h3>
+              </div>
+              <div class="ai-rec-message">
+                Based on this week's patterns, I recommend: <strong>1)</strong> Limit meetings to 2/day next week, <strong>2)</strong> Add a 15-min walk after lunch (your HRV recovers fastest then), <strong>3)</strong> Practice the cognitive reframe exercise when you notice catastrophizing. You're making progress — your check-in consistency is up 5% this week! 💪
+              </div>
+            </div>
+
+            <button class="submit-btn" onclick="app.goHome()" style="width:100%; margin-bottom: 30px">
+              ← Back to Home
+            </button>
+          </div>
+
+          <div class="tab-bar">
+            <button class="tab-item" onclick="app.goHome()"><div class="tab-icon">🏠</div><div class="tab-label">Home</div></button>
+            <button class="tab-item"><div class="tab-icon">📔</div><div class="tab-label">Journal</div></button>
+            <button class="tab-item active"><div class="tab-icon">📊</div><div class="tab-label">Insights</div></button>
+            <button class="tab-item"><div class="tab-icon">👤</div><div class="tab-label">Profile</div></button>
+          </div>
+        </div>
+
+      </div><!-- /iphone-screen -->
+    </div><!-- /iphone-frame -->
+
+    <!-- Right: Scenario Info Panel -->
+    <div class="scenario-info" id="scenario-info">
+      <div class="scenario-info-card show" id="info-card-1">
+        <h4>🛡️ Pitch Point</h4>
+        <p>The app doesn't wait for the user to be burnt out; it <strong>intervenes the moment the body shows signs of pressure</strong>, using Calendar + HRV data.</p>
+        <p class="pitch-point">"Proactive, not reactive."</p>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
