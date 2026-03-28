@@ -66,6 +66,41 @@ body {
   gap: 60px;
 }
 
+.aasha-intro {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(124,92,252,0.12);
+  border: 1px solid rgba(124,92,252,0.25);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.aasha-avatar {
+  font-size: 36px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.aasha-intro-text {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.aasha-intro-text strong {
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.aasha-intro-text span {
+  font-size: 12px;
+  color: rgba(255,255,255,0.55);
+  line-height: 1.4;
+}
+
 .scenario-nav {
   display: flex;
   flex-direction: column;
