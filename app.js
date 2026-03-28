@@ -447,6 +447,7 @@ const CheckInEngine = {
         emotions: avgEmo,
         vocals: avgVoc,
         oculomotor: this.oculomotorData,
+        cycle_context: CycleEngine.getContextString(),
       }),
     });
 
@@ -524,6 +525,81 @@ const CheckInEngine = {
 };
 
 
+// ====== CYCLE-AWARE ENGINE ======
+const CYCLE_PHASES = {
+  menstrual: {
+    name: 'Menstrual Phase', emoji: '🌙',
+    color: '#FF6B8A', bg: 'rgba(255,107,138,0.09)', border: 'rgba(255,107,138,0.22)',
+    headline: 'Rest & Restore',
+    body: 'Your body is doing important work. Lower energy is completely normal — this is a time for gentleness, not pushing through.',
+    workTip: 'Avoid high-stakes decisions today. Focus on completing existing tasks, not starting new ones.',
+    checkinPrompt: 'How is your body feeling today? Be honest — there\'s no "should" here.',
+    tags: ['Lower energy', 'Need rest', 'Reflective'],
+  },
+  follicular: {
+    name: 'Follicular Phase', emoji: '🌱',
+    color: '#34D399', bg: 'rgba(52,211,153,0.09)', border: 'rgba(52,211,153,0.22)',
+    headline: 'Rising Energy',
+    body: 'Estrogen is rising. You may feel more optimistic, creative, and ready to take on new challenges.',
+    workTip: 'Great time to start projects, brainstorm ideas, or have important conversations.',
+    checkinPrompt: 'What are you feeling motivated or excited about right now?',
+    tags: ['Rising energy', 'Creative', 'Optimistic'],
+  },
+  ovulatory: {
+    name: 'Ovulatory Phase', emoji: '✨',
+    color: '#FBBF24', bg: 'rgba(251,191,36,0.09)', border: 'rgba(251,191,36,0.28)',
+    headline: 'Peak Power',
+    body: 'Peak estrogen means peak confidence and social energy. Your verbal fluency and communication are at their strongest.',
+    workTip: 'Schedule presentations, interviews, or difficult conversations for this window — you\'re at your best.',
+    checkinPrompt: 'What\'s feeling possible for you right now?',
+    tags: ['Peak energy', 'Social', 'Confident'],
+  },
+  luteal: {
+    name: 'Luteal Phase', emoji: '🍂',
+    color: '#FF9500', bg: 'rgba(255,149,0,0.09)', border: 'rgba(255,149,0,0.22)',
+    headline: 'Turn Inward',
+    body: 'Progesterone rises then falls. Sensitivity, irritability, or fatigue are hormonal — not a character flaw.',
+    workTip: 'Wrap up projects and review rather than start new ones. Setting limits right now is valid and wise.',
+    checkinPrompt: 'What\'s feeling heavy or hard right now? Let\'s name it.',
+    tags: ['Sensitive', 'Inward', 'PMS possible'],
+  },
+};
+
+const CycleEngine = {
+  lastPeriodDate: null,
+  cycleLength: 28,
+  dismissed: false,
+
+  setData(lastPeriod, cycleLength) {
+    this.lastPeriodDate = new Date(lastPeriod);
+    this.cycleLength = parseInt(cycleLength) || 28;
+  },
+
+  getDayInCycle() {
+    if (!this.lastPeriodDate) return null;
+    const daysSince = Math.floor((new Date() - this.lastPeriodDate) / 86400000);
+    return (daysSince % this.cycleLength) + 1;
+  },
+
+  getCurrentPhase() {
+    const day = this.getDayInCycle();
+    if (day === null) return null;
+    let key = 'luteal';
+    if (day <= 5) key = 'menstrual';
+    else if (day <= 13) key = 'follicular';
+    else if (day <= 16) key = 'ovulatory';
+    return { ...CYCLE_PHASES[key], day };
+  },
+
+  getContextString() {
+    const phase = this.getCurrentPhase();
+    if (!phase) return '';
+    return `[Hormonal Context: Day ${phase.day} of cycle — ${phase.name}. ` +
+      `Emotional tendencies: ${phase.tags.join(', ')}. ` +
+      `Acknowledge if relevant to mood/energy, but don't over-explain.]`;
+  },
+};
+
 // ====== MAIN APPLICATION ======
 const app = {
   currentScreen: 'screen-home',
@@ -569,6 +645,12 @@ const app = {
     this.updateScenarioNav(num);
     this.hideNotification();
     CheckInEngine.cleanup();
+    // If user navigates via sidebar during onboarding, treat as skip
+    if (!this.cycleOnboardingDone) {
+      this.cycleOnboardingDone = true;
+      CycleEngine.dismissed = true;
+      this.saveCycleToStorage();
+    }
 
     switch(num) {
       case 0: this.startScenario0(); break;
@@ -704,6 +786,7 @@ const app = {
     this.showScreen('screen-checkin');
     this.updateInfoCard(2);
     this.resetRecording();
+    this.updateCheckinPromptForPhase();
 
     // Reset mode to video
     this.switchCheckinMode('video');
@@ -1093,6 +1176,119 @@ const app = {
     });
   },
 
+  // ====== CYCLE FEATURE ======
+  cycleOnboardingDone: false,
+
+  initCycle() {
+    // Restore persisted cycle data
+    try {
+      const saved = localStorage.getItem('daily_cycle');
+      if (saved) {
+        const data = JSON.parse(saved);
+        this.cycleOnboardingDone = true;
+        CycleEngine.dismissed = data.dismissed || false;
+        if (data.lastPeriodDate) {
+          CycleEngine.lastPeriodDate = new Date(data.lastPeriodDate);
+          CycleEngine.cycleLength = data.cycleLength || 28;
+        }
+        this.renderCycleCard();
+        return;
+      }
+    } catch(e) {}
+    // First launch — show onboarding
+    this.showScreen('screen-cycle-onboarding');
+  },
+
+  saveCycleToStorage() {
+    try {
+      localStorage.setItem('daily_cycle', JSON.stringify({
+        dismissed: CycleEngine.dismissed,
+        lastPeriodDate: CycleEngine.lastPeriodDate ? CycleEngine.lastPeriodDate.toISOString() : null,
+        cycleLength: CycleEngine.cycleLength,
+      }));
+    } catch(e) {}
+  },
+
+  acceptCycleOnboarding() {
+    this.cycleOnboardingDone = true;
+    this.showScreen('screen-home');
+    this.showCycleSetup();
+  },
+
+  skipCycleOnboarding() {
+    this.cycleOnboardingDone = true;
+    CycleEngine.dismissed = true;
+    this.saveCycleToStorage();
+    this.showScreen('screen-home');
+  },
+
+  renderCycleCard() {
+    const container = document.getElementById('cycle-card-container');
+    if (!container) return;
+    const phase = CycleEngine.getCurrentPhase();
+
+    if (phase) {
+      container.innerHTML = `
+        <div class="cycle-card" style="--cycle-color:${phase.color};--cycle-bg:${phase.bg};--cycle-border:${phase.border};background:${phase.bg};border-color:${phase.border}">
+          <div class="cycle-card-header">
+            <div class="cycle-phase-label">
+              <span class="cycle-phase-emoji">${phase.emoji}</span>
+              <span class="cycle-phase-name" style="color:${phase.color}">${phase.name}</span>
+            </div>
+            <span class="cycle-day-badge" style="background:${phase.color}">Day ${phase.day}</span>
+          </div>
+          <div class="cycle-headline">${phase.headline}</div>
+          <div class="cycle-body">${phase.body}</div>
+          <div class="cycle-work-tip"><span>💼</span><span>${phase.workTip}</span></div>
+          <div class="cycle-tags">
+            ${phase.tags.map(t => `<span class="cycle-tag" style="color:${phase.color};border-color:${phase.border}">${t}</span>`).join('')}
+          </div>
+        </div>`;
+    } else {
+      container.innerHTML = '';
+    }
+  },
+
+  showCycleSetup() {
+    const modal = document.getElementById('cycle-setup-modal');
+    const overlay = document.getElementById('cycle-modal-overlay');
+    if (modal) modal.classList.add('show');
+    if (overlay) overlay.classList.add('show');
+    const dateInput = document.getElementById('cycle-date-input');
+    if (dateInput && !dateInput.value) {
+      dateInput.value = new Date().toISOString().split('T')[0];
+    }
+  },
+
+  hideCycleSetup() {
+    const modal = document.getElementById('cycle-setup-modal');
+    const overlay = document.getElementById('cycle-modal-overlay');
+    if (modal) modal.classList.remove('show');
+    if (overlay) overlay.classList.remove('show');
+  },
+
+  saveCycleData() {
+    const dateInput = document.getElementById('cycle-date-input');
+    const slider = document.getElementById('cycle-length-slider');
+    if (!dateInput || !dateInput.value) return;
+    CycleEngine.setData(dateInput.value, slider ? slider.value : 28);
+    this.saveCycleToStorage();
+    this.hideCycleSetup();
+    this.renderCycleCard();
+  },
+
+  dismissCyclePrompt() {
+    CycleEngine.dismissed = true;
+    this.hideCycleSetup();
+    this.renderCycleCard();
+  },
+
+  updateCheckinPromptForPhase() {
+    const phase = CycleEngine.getCurrentPhase();
+    const subtitle = document.getElementById('checkin-subtitle');
+    if (subtitle && phase) subtitle.textContent = phase.checkinPrompt;
+  },
+
   // ====== INFO CARD PANEL ======
   updateInfoCard(scenario) {
     const container = document.getElementById('scenario-info');
@@ -1137,7 +1333,7 @@ const app = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
-  app.showScreen('screen-home');
+  app.initCycle();
 
   const breathCircle = document.getElementById('breathing-circle');
   if (breathCircle) {
