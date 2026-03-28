@@ -124,21 +124,67 @@ body {
   line-height: 1.4;
 }
 
+/* Dhaka textile pattern — used as decorative accent */
+.dhaka-strip {
+  height: 6px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #DC143C   0px,  #DC143C   6px,
+      #FFD700   6px,  #FFD700   10px,
+      #228B22   10px, #228B22   16px,
+      #FFD700   16px, #FFD700   20px,
+      #DC143C   20px, #DC143C   26px,
+      #FFFFFF   26px, #FFFFFF   28px,
+      #003893   28px, #003893   34px,
+      #FFFFFF   34px, #FFFFFF   36px
+    );
+  opacity: 0.85;
+}
+
 .app-title-section {
   text-align: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 16px;
+  padding: 16px 12px 14px;
+  border: 1px solid rgba(255,255,255,0.08);
+  overflow: hidden;
+  position: relative;
+}
+
+.app-title-section::after {
+  content: '';
+  display: block;
+  height: 5px;
+  margin-top: 12px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #DC143C   0px,  #DC143C   6px,
+      #FFD700   6px,  #FFD700   10px,
+      #228B22   10px, #228B22   16px,
+      #FFD700   16px, #FFD700   20px,
+      #DC143C   20px, #DC143C   26px,
+      #FFFFFF   26px, #FFFFFF   28px,
+      #003893   28px, #003893   34px,
+      #FFFFFF   34px, #FFFFFF   36px
+    );
+  opacity: 0.75;
 }
 
 .app-title-section h1 {
   color: white;
   font-size: 28px;
-  font-weight: 700;
+  font-weight: 800;
   letter-spacing: -0.5px;
 }
 
 .app-title-section p {
   color: rgba(255,255,255,0.5);
-  font-size: 12px;
+  font-size: 11px;
   margin-top: 4px;
   letter-spacing: 2px;
   text-transform: uppercase;
