@@ -448,6 +448,7 @@ const CheckInEngine = {
         vocals: avgVoc,
         oculomotor: this.oculomotorData,
         cycle_context: CycleEngine.getContextString(),
+        stressor_context: app.getStressorContext(),
       }),
     });
 
@@ -753,6 +754,7 @@ const app = {
     this.hideNotification();
     this.stopBreathing();
     this.stopRecording();
+    this.resetStressors();
     CheckInEngine.cleanup();
     this.showScreen('screen-home');
     this.updateScenarioNav(1);
@@ -1413,6 +1415,38 @@ const app = {
     const phase = CycleEngine.getCurrentPhase();
     const subtitle = document.getElementById('checkin-subtitle');
     if (subtitle && phase) subtitle.textContent = phase.checkinPrompt;
+  },
+
+  // ====== NEPAL STRESSOR CARDS ======
+  activeStressors: new Set(),
+
+  STRESSOR_CONTEXT: {
+    abroad:     'User selected "Abroad ko Tension" — they are dealing with the stress of living or deciding to move abroad. Be aware of: visa anxiety, brain drain guilt, pressure to send remittances, loneliness of being far from family, and the cultural weight of leaving Nepal.',
+    ghar:       'User selected "Ghar ko Pressure" — they are experiencing family pressure common in Nepali households. Be aware of: expectations to become a doctor/engineer/government officer, arranged marriage pressure alongside career, collective family decision-making overriding personal choices.',
+    exam:       'User selected "Board Exam Pressure" — they are preparing for or recovering from high-stakes Nepali academic exams (SEE, +2 boards, IOE/IOM/Loksewa entrance). Be aware of: extreme cultural weight placed on these results, family honour tied to scores, fear of disappointing parents.',
+    remittance: 'User selected "Remittance Burden" — they are financially supporting family back in Nepal while working abroad or in a demanding job. Be aware of: financial anxiety, guilt around personal spending, sacrificing mental health for family stability, isolation.',
+  },
+
+  toggleStressor(key) {
+    const btn = document.getElementById('stressor-' + key);
+    if (this.activeStressors.has(key)) {
+      this.activeStressors.delete(key);
+      if (btn) btn.classList.remove('active');
+    } else {
+      this.activeStressors.add(key);
+      if (btn) btn.classList.add('active');
+    }
+  },
+
+  getStressorContext() {
+    if (!this.activeStressors.size) return '';
+    const lines = [...this.activeStressors].map(k => this.STRESSOR_CONTEXT[k]).filter(Boolean);
+    return '[Cultural Stressor Context]\n' + lines.join('\n');
+  },
+
+  resetStressors() {
+    this.activeStressors.clear();
+    document.querySelectorAll('.stressor-card').forEach(c => c.classList.remove('active'));
   },
 
   // ====== RECOMMENDATIONS ======
