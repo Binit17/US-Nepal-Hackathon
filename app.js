@@ -600,6 +600,126 @@ const CycleEngine = {
   },
 };
 
+// ====== RECOMMENDATIONS DATA ======
+const RECS = [
+  // ── BURNOUT ──
+  {
+    category: 'burnout', type: 'course',
+    title: 'Burnout: How to Avoid It',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '1h 2m', free: true, audience: ['student', 'professional'],
+    desc: 'Recognise the warning signs of burnout and build sustainable work habits.',
+  },
+  {
+    category: 'burnout', type: 'course',
+    title: 'Managing Stress for Positive Change',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '58m', free: true, audience: ['student', 'professional'],
+    desc: 'Turn stress into a driver for growth rather than a source of damage.',
+  },
+  {
+    category: 'burnout', type: 'article',
+    title: '6 Causes of Burnout, and How to Avoid Them',
+    source: 'Harvard Business Review', sourceColor: '#C41E3A',
+    duration: '6 min read', free: true, audience: ['professional'],
+    desc: 'Research-backed breakdown of why professionals burn out and what actually helps.',
+  },
+  {
+    category: 'burnout', type: 'article',
+    title: 'Burnout Is About Your Workplace, Not Your People',
+    source: 'Harvard Business Review', sourceColor: '#C41E3A',
+    duration: '8 min read', free: true, audience: ['professional'],
+    desc: 'Reframes burnout as a systemic issue — useful for advocating for yourself.',
+  },
+  // ── ANXIETY / STRESS ──
+  {
+    category: 'anxiety', type: 'course',
+    title: 'Building Resilience',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '1h 14m', free: true, audience: ['student', 'professional'],
+    desc: 'Practical frameworks for bouncing back from setbacks and pressure.',
+  },
+  {
+    category: 'anxiety', type: 'course',
+    title: 'Mindfulness Practices',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '45m', free: true, audience: ['student', 'professional'],
+    desc: 'Short evidence-based mindfulness exercises for high-pressure environments.',
+  },
+  {
+    category: 'anxiety', type: 'article',
+    title: 'How to Recover from Work Stress, According to Science',
+    source: 'Harvard Business Review', sourceColor: '#C41E3A',
+    duration: '5 min read', free: true, audience: ['professional'],
+    desc: 'Science-backed recovery strategies that actually move the needle on stress.',
+  },
+  {
+    category: 'anxiety', type: 'course',
+    title: 'The Science of Well-Being',
+    source: 'Coursera — Yale University', sourceColor: '#0056D2',
+    duration: '19 hours', free: true, audience: ['student'],
+    desc: 'Yale\'s most popular course ever. Understand what actually makes humans flourish.',
+  },
+  // ── FATIGUE / LOW ENERGY ──
+  {
+    category: 'fatigue', type: 'course',
+    title: 'Time Management Fundamentals',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '2h 55m', free: true, audience: ['student', 'professional'],
+    desc: 'Stop feeling behind. Build a system that works with your energy, not against it.',
+  },
+  {
+    category: 'fatigue', type: 'course',
+    title: 'Overcoming Procrastination',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '1h 23m', free: true, audience: ['student', 'professional'],
+    desc: 'Understand the emotional roots of procrastination and break the cycle.',
+  },
+  {
+    category: 'fatigue', type: 'video',
+    title: 'How to Study Effectively — Evidence-Based Tips',
+    source: 'YouTube', sourceColor: '#FF0000',
+    duration: '18 min', free: true, audience: ['student'],
+    desc: 'Cognitive science-backed study techniques used by top university students.',
+  },
+  // ── CAREER / GENERAL ──
+  {
+    category: 'general', type: 'course',
+    title: 'Work Smarter, Not Harder: Time Management',
+    source: 'Coursera — UC Irvine', sourceColor: '#0056D2',
+    duration: '10 hours', free: true, audience: ['professional'],
+    desc: 'Reduce cognitive overload and get more done with less pressure.',
+  },
+  {
+    category: 'general', type: 'course',
+    title: 'Learning How to Learn',
+    source: 'Coursera — UC San Diego', sourceColor: '#0056D2',
+    duration: '15 hours', free: true, audience: ['student'],
+    desc: 'The most enrolled online course in history. Master how your brain retains knowledge.',
+  },
+  {
+    category: 'general', type: 'course',
+    title: 'Managing Your Career: Early Career',
+    source: 'LinkedIn Learning', sourceColor: '#0A66C2',
+    duration: '1h 10m', free: true, audience: ['student', 'professional'],
+    desc: 'Reduce career uncertainty with a clear framework for professional growth.',
+  },
+  {
+    category: 'general', type: 'video',
+    title: 'How to Stop Being Tired All the Time',
+    source: 'YouTube', sourceColor: '#FF0000',
+    duration: '12 min', free: true, audience: ['student', 'professional'],
+    desc: 'Evidence-based tips for recovering energy during high-demand periods.',
+  },
+];
+
+const CATEGORY_META = {
+  burnout:  { label: 'For Burnout Recovery',   emoji: '🔥', color: '#FF6B8A' },
+  anxiety:  { label: 'For Stress & Anxiety',    emoji: '🌀', color: '#7C5CFC' },
+  fatigue:  { label: 'For Low Energy & Focus',  emoji: '⚡', color: '#FF9500' },
+  general:  { label: 'Career & Learning',        emoji: '🚀', color: '#34D399' },
+};
+
 // ====== MAIN APPLICATION ======
 const app = {
   currentScreen: 'screen-home',
@@ -963,6 +1083,12 @@ const app = {
     // Populate results
     if (result) {
       CheckInEngine.displayResults(result);
+      // Map AI-detected patterns to recommendation categories
+      if (result.patterns) {
+        const patternMap = { burnout: 'burnout', overwork: 'burnout', stress: 'anxiety', anxiety: 'anxiety', fatigue: 'fatigue', tired: 'fatigue', 'low energy': 'fatigue' };
+        const detected = result.patterns.map(p => patternMap[p.label?.toLowerCase()] || null).filter(Boolean);
+        if (detected.length) app.lastDetectedCategories = [...new Set(detected)];
+      }
     }
 
     // Cleanup camera/mic
@@ -1287,6 +1413,110 @@ const app = {
     const phase = CycleEngine.getCurrentPhase();
     const subtitle = document.getElementById('checkin-subtitle');
     if (subtitle && phase) subtitle.textContent = phase.checkinPrompt;
+  },
+
+  // ====== RECOMMENDATIONS ======
+  currentAudience: 'student',
+  lastDetectedCategories: ['burnout', 'fatigue'],
+
+  goToRecommendations() {
+    this.showScreen('screen-recommendations');
+    this.renderMoodBanner();
+    this.renderPhaseBanner();
+    this.renderRecs();
+  },
+
+  switchAudience(type) {
+    this.currentAudience = type;
+    document.querySelectorAll('.recs-toggle-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.getElementById('toggle-' + type);
+    if (btn) btn.classList.add('active');
+    this.renderRecs();
+  },
+
+  renderMoodBanner() {
+    const el = document.getElementById('recs-mood-banner');
+    if (!el) return;
+    const cats = this.lastDetectedCategories;
+    const labels = cats.map(c => CATEGORY_META[c] ? `${CATEGORY_META[c].emoji} ${CATEGORY_META[c].label}` : '').filter(Boolean);
+    if (!labels.length) { el.innerHTML = ''; return; }
+    el.innerHTML = `
+      <div class="recs-mood-banner-inner">
+        <span class="recs-mood-label">Based on your last check-in:</span>
+        <div class="recs-mood-tags">${cats.map(c => {
+          const m = CATEGORY_META[c];
+          return m ? `<span class="recs-mood-tag" style="background:${m.color}20;color:${m.color}">${m.emoji} ${m.label}</span>` : '';
+        }).join('')}</div>
+      </div>`;
+  },
+
+  renderPhaseBanner() {
+    const el = document.getElementById('recs-phase-banner');
+    if (!el) return;
+    const phase = CycleEngine.getCurrentPhase();
+    if (!phase) { el.innerHTML = ''; return; }
+    const phaseMessages = {
+      menstrual:  'In your menstrual phase — we\'ve prioritised rest and recovery resources.',
+      follicular: 'In your follicular phase — energy is rising. Great time for new learning.',
+      ovulatory:  'At peak energy — we\'ve highlighted resources to make the most of it.',
+      luteal:     'In your luteal phase — we\'ve surfaced gentler, lower-pressure resources.',
+    };
+    const key = Object.keys(CYCLE_PHASES).find(k => CYCLE_PHASES[k].name === phase.name) || 'luteal';
+    el.innerHTML = `
+      <div class="recs-phase-banner-inner" style="background:${phase.bg};border-color:${phase.border}">
+        <span>${phase.emoji}</span>
+        <span style="color:${phase.color}">${phaseMessages[key]}</span>
+      </div>`;
+  },
+
+  renderRecs() {
+    const container = document.getElementById('recs-container');
+    if (!container) return;
+
+    const audience = this.currentAudience;
+    const detected = this.lastDetectedCategories;
+
+    // Show detected categories first, then general
+    const orderedCategories = [...new Set([...detected, 'general'])];
+
+    let html = '';
+    orderedCategories.forEach(cat => {
+      const meta = CATEGORY_META[cat];
+      if (!meta) return;
+      const items = RECS.filter(r => r.category === cat && r.audience.includes(audience));
+      if (!items.length) return;
+
+      html += `<div class="recs-section">
+        <div class="recs-section-title">
+          <span>${meta.emoji}</span>
+          <span>${meta.label}</span>
+        </div>`;
+
+      items.forEach(r => {
+        const typeIcon = r.type === 'course' ? '🎓' : r.type === 'article' ? '📄' : '▶️';
+        const typeLabel = r.type === 'course' ? 'Course' : r.type === 'article' ? 'Article' : 'Video';
+        html += `
+        <div class="rec-card">
+          <div class="rec-card-top">
+            <div class="rec-type-badge" style="background:${r.sourceColor}18;color:${r.sourceColor}">
+              ${typeIcon} ${typeLabel}
+            </div>
+            ${r.free ? '<span class="rec-free-badge">Free</span>' : ''}
+          </div>
+          <div class="rec-title">${r.title}</div>
+          <div class="rec-source" style="color:${r.sourceColor}">${r.source}</div>
+          <div class="rec-desc">${r.desc}</div>
+          <div class="rec-footer">
+            <span class="rec-duration">⏱ ${r.duration}</span>
+            <button class="rec-view-btn" style="background:${r.sourceColor}">View →</button>
+          </div>
+        </div>`;
+      });
+
+      html += `</div>`;
+    });
+
+    container.innerHTML = html;
   },
 
   // ====== INFO CARD PANEL ======
