@@ -1135,9 +1135,89 @@ const app = {
   },
 
   drawCharts() {
+    this.drawBurnoutScore();
     this.drawMoodChart();
     this.drawHRVChart();
     this.drawEmotionChart();
+  },
+
+  drawBurnoutScore() {
+    // Demo values derived from the hardcoded chart data
+    // HRV avg 48ms vs baseline ~65ms → 26% decline → high contribution
+    const hrvScore   = 0.80; // 30% weight
+    const moodScore  = 0.75; // 30% weight — mood dropped 12%
+    const eventScore = 0.60; // 25% weight — upcoming exam/deadline context
+    // Cycle phase factor — luteal phase = higher vulnerability
+    const phase = window.CycleEngine ? CycleEngine.getCurrentPhase() : null;
+    const cycleScore = phase && phase.name === 'Luteal' ? 0.75 : 0.45;
+
+    const total = Math.round(
+      hrvScore   * 30 +
+      moodScore  * 30 +
+      eventScore * 25 +
+      cycleScore * 15
+    );
+
+    // Update score display
+    const scoreEl = document.getElementById('burnout-score');
+    if (scoreEl) scoreEl.textContent = total;
+
+    // Update threshold message
+    const threshEl = document.getElementById('burnout-threshold');
+    if (threshEl) {
+      if (total >= 75)      threshEl.textContent = '🚨 Critical — burnout event likely within 2–3 days';
+      else if (total >= 60) threshEl.textContent = '⚠️ High risk — est. 4–5 days to critical threshold';
+      else if (total >= 40) threshEl.textContent = '🟡 Moderate — monitor trends this week';
+      else                  threshEl.textContent = '✅ Low risk — keep up your current habits';
+    }
+
+    // Update factor bars
+    const bars = {
+      'bf-hrv':    hrvScore,
+      'bf-mood':   moodScore,
+      'bf-events': eventScore,
+      'bf-cycle':  cycleScore,
+    };
+    Object.entries(bars).forEach(([id, val]) => {
+      const el = document.getElementById(id);
+      if (el) el.style.width = Math.round(val * 100) + '%';
+    });
+
+    // Draw arc gauge
+    const canvas = document.getElementById('burnout-gauge');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const cx = 60, cy = 65, r = 50;
+    const startAngle = Math.PI;
+    const endAngle   = startAngle + Math.PI * (total / 100);
+
+    ctx.clearRect(0, 0, 120, 70);
+
+    // Background arc
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, Math.PI, 2 * Math.PI);
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Filled arc
+    const grad = ctx.createLinearGradient(10, 0, 110, 0);
+    grad.addColorStop(0, '#34C759');
+    grad.addColorStop(0.5, '#FF9500');
+    grad.addColorStop(1, '#FF3B30');
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, startAngle, endAngle);
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 10;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+
+    // Score label inside gauge
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('/100', cx, cy - 8);
   },
 
   drawMoodChart() {

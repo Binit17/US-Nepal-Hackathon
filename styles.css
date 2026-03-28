@@ -2144,6 +2144,108 @@ body {
   padding: 16px 16px 100px;
 }
 
+/* ── Predictive Burnout Score Card ── */
+.burnout-card {
+  background: linear-gradient(135deg, rgba(255,59,48,0.15), rgba(255,149,0,0.1));
+  border: 1px solid rgba(255,59,48,0.3);
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.burnout-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.burnout-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #FF6B6B;
+}
+
+.burnout-trend {
+  font-size: 11px;
+  color: #FF9500;
+  font-weight: 600;
+}
+
+.burnout-score-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.burnout-score {
+  font-size: 64px;
+  font-weight: 900;
+  line-height: 1;
+  background: linear-gradient(135deg, #FF3B30, #FF9500);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.burnout-gauge-wrap {
+  opacity: 0.9;
+}
+
+.burnout-threshold {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  margin-bottom: 14px;
+  padding: 6px 10px;
+  background: rgba(255,59,48,0.1);
+  border-radius: 8px;
+  border-left: 3px solid #FF3B30;
+}
+
+.burnout-factors {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.burnout-factor {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.bf-label {
+  font-size: 11px;
+  color: rgba(255,255,255,0.55);
+  width: 90px;
+  flex-shrink: 0;
+}
+
+.bf-bar {
+  flex: 1;
+  height: 5px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bf-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #FF3B30, #FF9500);
+}
+
+.bf-pct {
+  font-size: 10px;
+  color: rgba(255,255,255,0.4);
+  width: 28px;
+  text-align: right;
+  flex-shrink: 0;
+}
+
 /* Chart Cards */
 .chart-card {
   background: var(--bg-card);

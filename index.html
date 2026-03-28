@@ -697,6 +697,44 @@
             <p>March 22 – 28, 2026</p>
           </div>
           <div class="weekly-content">
+
+            <!-- Predictive Burnout Score -->
+            <div class="burnout-card" id="burnout-card">
+              <div class="burnout-top">
+                <div class="burnout-label">🔥 Burnout Risk Score</div>
+                <div class="burnout-trend" id="burnout-trend">↑ trending up</div>
+              </div>
+              <div class="burnout-score-row">
+                <div class="burnout-score" id="burnout-score">73</div>
+                <div class="burnout-gauge-wrap">
+                  <canvas id="burnout-gauge" width="120" height="70"></canvas>
+                </div>
+              </div>
+              <div class="burnout-threshold" id="burnout-threshold">⚠️ High risk — est. 4 days to critical threshold</div>
+              <div class="burnout-factors">
+                <div class="burnout-factor">
+                  <span class="bf-label">HRV Decline</span>
+                  <div class="bf-bar"><div class="bf-fill" id="bf-hrv" style="width:80%"></div></div>
+                  <span class="bf-pct">30%</span>
+                </div>
+                <div class="burnout-factor">
+                  <span class="bf-label">Mood Decline</span>
+                  <div class="bf-bar"><div class="bf-fill" id="bf-mood" style="width:75%"></div></div>
+                  <span class="bf-pct">30%</span>
+                </div>
+                <div class="burnout-factor">
+                  <span class="bf-label">Event Pressure</span>
+                  <div class="bf-bar"><div class="bf-fill" id="bf-events" style="width:60%"></div></div>
+                  <span class="bf-pct">25%</span>
+                </div>
+                <div class="burnout-factor">
+                  <span class="bf-label">Cycle Phase</span>
+                  <div class="bf-bar"><div class="bf-fill" id="bf-cycle" style="width:55%"></div></div>
+                  <span class="bf-pct">15%</span>
+                </div>
+              </div>
+            </div>
+
             <!-- Mood Trend Chart -->
             <div class="chart-card">
               <div class="chart-card-header">
