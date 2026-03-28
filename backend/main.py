@@ -324,6 +324,7 @@ class CheckInAnalyzeRequest(BaseModel):
     emotions: dict = {}
     vocals: dict = {}
     oculomotor: dict = {}
+    cycle_context: str = ""
 
 
 @app.post("/api/checkin/analyze")
@@ -332,6 +333,9 @@ async def analyze_checkin(req: CheckInAnalyzeRequest):
     from google.genai import types
 
     prompt = f"""You are a clinical AI analyzing a mental health check-in. The user recorded a video/audio journal entry. Analyze all available multi-modal data and provide a structured assessment.
+
+## Hormonal / Cycle Context
+{req.cycle_context or "Not provided."}
 
 ## Transcript
 {req.transcript or "No speech detected."}
