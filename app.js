@@ -1104,6 +1104,9 @@ const app = {
   startScenario3() {
     this.showScreen('screen-text-input');
     this.updateInfoCard(3);
+    const ta = document.getElementById('journal-textarea');
+    const cc = document.querySelector('.char-count');
+    if (ta && cc) cc.textContent = ta.value.length + ' characters';
   },
 
   submitText() {

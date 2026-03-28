@@ -517,7 +517,7 @@
           </div>
           
           <div class="text-input-area">
-            <textarea class="journal-textarea" id="journal-textarea" placeholder="I'm feeling..."
+            <textarea class="journal-textarea" id="journal-textarea" placeholder="I'm feeling..." oninput="document.querySelector('.char-count').textContent = this.value.length + ' characters'"
             >I don't see the point anymore. Everything feels hopeless and I just want it all to stop. Nobody would even notice if I wasn't here tomorrow...</textarea>
           </div>
           
