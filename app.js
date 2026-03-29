@@ -1097,7 +1097,10 @@ const app = {
     CheckInEngine.cleanup();
 
     // Show results after brief delay
-    setTimeout(() => { this.showScreen('screen-results'); }, 600);
+    setTimeout(() => {
+      this.showScreen('screen-results');
+      this.autoWaterPlant(); // check-in complete = plant watered
+    }, 600);
   },
 
   // ====== SCENARIO 3: SAFETY NET & RECOVERY (DUMMY DATA — UNCHANGED) ======
@@ -1500,6 +1503,116 @@ const app = {
     if (subtitle && phase) subtitle.textContent = phase.checkinPrompt;
   },
 
+  // ====== PLANT GROWTH SYSTEM ======
+  PLANT_STAGES: [
+    { emoji: '🌱', name: 'Just Planted',   stage: 'Your journey begins here',      min: 0  },
+    { emoji: '🌿', name: 'First Sprout',   stage: 'Something beautiful is growing', min: 1  },
+    { emoji: '🪴', name: 'Growing Strong', stage: 'Showing up for yourself 💪',     min: 3  },
+    { emoji: '🌸', name: 'Flowering',      stage: 'Your consistency is blooming',   min: 5  },
+    { emoji: '🌳', name: 'Thriving',       stage: 'Look how far you\'ve come 🎉',   min: 8  },
+  ],
+
+  getPlantData() {
+    try {
+      const raw = localStorage.getItem('saathi_plant');
+      return raw ? JSON.parse(raw) : { checkins: 4, streak: 4, lastWatered: null, wateredToday: false };
+    } catch { return { checkins: 4, streak: 4, lastWatered: null, wateredToday: false }; }
+  },
+
+  savePlantData(data) {
+    try { localStorage.setItem('saathi_plant', JSON.stringify(data)); } catch {}
+  },
+
+  getPlantStage(checkins) {
+    let stage = this.PLANT_STAGES[0];
+    for (const s of this.PLANT_STAGES) {
+      if (checkins >= s.min) stage = s;
+    }
+    return stage;
+  },
+
+  initPlant() {
+    const data = this.getPlantData();
+    // Check if already watered today
+    const today = new Date().toDateString();
+    data.wateredToday = data.lastWatered === today;
+    this.savePlantData(data);
+    this.renderPlant(data);
+  },
+
+  renderPlant(data) {
+    const stage = this.getPlantStage(data.checkins);
+    const emojiEl  = document.getElementById('plant-emoji');
+    const nameEl   = document.getElementById('plant-name');
+    const stageEl  = document.getElementById('plant-stage');
+    const streakEl = document.getElementById('plant-streak');
+    const btnEl    = document.getElementById('plant-water-btn');
+
+    if (emojiEl)  emojiEl.textContent  = stage.emoji;
+    if (nameEl)   nameEl.textContent   = stage.name;
+    if (stageEl)  stageEl.textContent  = stage.stage;
+    if (streakEl) streakEl.textContent = `🔥 ${data.streak} day streak`;
+
+    if (btnEl) {
+      if (data.wateredToday) {
+        btnEl.textContent = '✅ Watered today';
+        btnEl.disabled = true;
+        btnEl.classList.add('watered');
+      } else {
+        btnEl.textContent = '💧 Water Today';
+        btnEl.disabled = false;
+        btnEl.classList.remove('watered');
+      }
+    }
+  },
+
+  waterPlant() {
+    const data = this.getPlantData();
+    const today = new Date().toDateString();
+    if (data.wateredToday) return;
+
+    const oldStage = this.getPlantStage(data.checkins);
+    data.checkins += 1;
+    data.streak += 1;
+    data.lastWatered = today;
+    data.wateredToday = true;
+    this.savePlantData(data);
+
+    const newStage = this.getPlantStage(data.checkins);
+    const leveledUp = newStage.emoji !== oldStage.emoji;
+
+    // Water ripple animation
+    const ripple = document.getElementById('plant-ripple');
+    if (ripple) {
+      ripple.classList.add('splash');
+      setTimeout(() => ripple.classList.remove('splash'), 600);
+    }
+
+    // Grow animation if leveled up
+    if (leveledUp) {
+      const emojiEl = document.getElementById('plant-emoji');
+      if (emojiEl) {
+        emojiEl.classList.add('plant-grow');
+        setTimeout(() => emojiEl.classList.remove('plant-grow'), 800);
+      }
+    }
+
+    this.renderPlant(data);
+  },
+
+  // Called after check-in analysis completes — auto-waters the plant
+  autoWaterPlant() {
+    const data = this.getPlantData();
+    const today = new Date().toDateString();
+    if (data.wateredToday) return;
+    data.checkins += 1;
+    data.streak += 1;
+    data.lastWatered = today;
+    data.wateredToday = true;
+    this.savePlantData(data);
+    this.renderPlant(data);
+  },
+
   // ====== NEPAL STRESSOR CARDS ======
   activeStressors: new Set(),
 
@@ -1681,6 +1794,7 @@ const app = {
 // Initialize
 document.addEventListener('DOMContentLoaded', () => {
   app.initCycle();
+  app.initPlant();
 
   const breathCircle = document.getElementById('breathing-circle');
   if (breathCircle) {
