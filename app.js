@@ -1505,35 +1505,34 @@ const app = {
 
   // ====== PLANT GROWTH SYSTEM ======
   PLANT_STAGES: [
-    { emoji: '🌱', name: 'Just Planted',   stage: 'Your journey begins here',      min: 0  },
-    { emoji: '🌿', name: 'First Sprout',   stage: 'Something beautiful is growing', min: 1  },
-    { emoji: '🪴', name: 'Growing Strong', stage: 'Showing up for yourself 💪',     min: 3  },
-    { emoji: '🌸', name: 'Flowering',      stage: 'Your consistency is blooming',   min: 5  },
-    { emoji: '🌳', name: 'Thriving',       stage: 'Look how far you\'ve come 🎉',   min: 8  },
+    { cssStage: 1, name: 'Seedling',      label: 'Just planted 🌱',               stemH: '10px', next: 'Water 2 more days to sprout',      minStreak: 0  },
+    { cssStage: 2, name: 'Sprouting',     label: 'First leaves appearing 🌿',     stemH: '24px', next: 'Water 4 more days to grow',         minStreak: 2  },
+    { cssStage: 3, name: 'Growing',       label: 'Growing strong 💪',             stemH: '40px', next: 'Water 3 more days for buds',        minStreak: 4  },
+    { cssStage: 4, name: 'Budding',       label: 'Buds forming 🌸',               stemH: '54px', next: 'Water 7 more days to bloom fully',  minStreak: 7  },
+    { cssStage: 5, name: 'Blooming',      label: 'In full bloom 🌺 You made it!', stemH: '66px', next: 'You\'re thriving! Keep it up 🌳',   minStreak: 14 },
   ],
 
   getPlantData() {
     try {
       const raw = localStorage.getItem('saathi_plant');
-      return raw ? JSON.parse(raw) : { checkins: 4, streak: 4, lastWatered: null, wateredToday: false };
-    } catch { return { checkins: 4, streak: 4, lastWatered: null, wateredToday: false }; }
+      return raw ? JSON.parse(raw) : { streak: 4, lastWatered: null, wateredToday: false };
+    } catch { return { streak: 4, lastWatered: null, wateredToday: false }; }
   },
 
   savePlantData(data) {
     try { localStorage.setItem('saathi_plant', JSON.stringify(data)); } catch {}
   },
 
-  getPlantStage(checkins) {
+  getPlantStage(streak) {
     let stage = this.PLANT_STAGES[0];
     for (const s of this.PLANT_STAGES) {
-      if (checkins >= s.min) stage = s;
+      if (streak >= s.minStreak) stage = s;
     }
     return stage;
   },
 
   initPlant() {
     const data = this.getPlantData();
-    // Check if already watered today
     const today = new Date().toDateString();
     data.wateredToday = data.lastWatered === today;
     this.savePlantData(data);
@@ -1541,16 +1540,25 @@ const app = {
   },
 
   renderPlant(data) {
-    const stage = this.getPlantStage(data.checkins);
-    const emojiEl  = document.getElementById('plant-emoji');
-    const nameEl   = document.getElementById('plant-name');
-    const stageEl  = document.getElementById('plant-stage');
-    const streakEl = document.getElementById('plant-streak');
-    const btnEl    = document.getElementById('plant-water-btn');
+    const stage   = this.getPlantStage(data.streak);
+    const illus   = document.getElementById('plant-illustration');
+    const stem    = document.getElementById('p-stem');
+    const nameEl  = document.getElementById('plant-name');
+    const stageEl = document.getElementById('plant-stage');
+    const nextEl  = document.getElementById('plant-next');
+    const streakEl= document.getElementById('plant-streak');
+    const btnEl   = document.getElementById('plant-water-btn');
 
-    if (emojiEl)  emojiEl.textContent  = stage.emoji;
+    // Update CSS stage class on illustration
+    if (illus) {
+      illus.className = `plant-illustration stage-${stage.cssStage}`;
+    }
+    // Grow stem height
+    if (stem) stem.style.setProperty('--stem-h', stage.stemH);
+
     if (nameEl)   nameEl.textContent   = stage.name;
-    if (stageEl)  stageEl.textContent  = stage.stage;
+    if (stageEl)  stageEl.textContent  = stage.label;
+    if (nextEl)   nextEl.textContent   = stage.next;
     if (streakEl) streakEl.textContent = `🔥 ${data.streak} day streak`;
 
     if (btnEl) {
@@ -1571,29 +1579,28 @@ const app = {
     const today = new Date().toDateString();
     if (data.wateredToday) return;
 
-    const oldStage = this.getPlantStage(data.checkins);
-    data.checkins += 1;
+    const oldStage = this.getPlantStage(data.streak);
     data.streak += 1;
     data.lastWatered = today;
     data.wateredToday = true;
     this.savePlantData(data);
 
-    const newStage = this.getPlantStage(data.checkins);
-    const leveledUp = newStage.emoji !== oldStage.emoji;
+    const newStage = this.getPlantStage(data.streak);
+    const leveledUp = newStage.cssStage !== oldStage.cssStage;
 
-    // Water ripple animation
+    // Water ripple
     const ripple = document.getElementById('plant-ripple');
     if (ripple) {
       ripple.classList.add('splash');
-      setTimeout(() => ripple.classList.remove('splash'), 600);
+      setTimeout(() => ripple.classList.remove('splash'), 700);
     }
 
-    // Grow animation if leveled up
+    // Level up animation
     if (leveledUp) {
-      const emojiEl = document.getElementById('plant-emoji');
-      if (emojiEl) {
-        emojiEl.classList.add('plant-grow');
-        setTimeout(() => emojiEl.classList.remove('plant-grow'), 800);
+      const illus = document.getElementById('plant-illustration');
+      if (illus) {
+        illus.classList.add('leveling-up');
+        setTimeout(() => illus.classList.remove('leveling-up'), 800);
       }
     }
 
@@ -1605,7 +1612,6 @@ const app = {
     const data = this.getPlantData();
     const today = new Date().toDateString();
     if (data.wateredToday) return;
-    data.checkins += 1;
     data.streak += 1;
     data.lastWatered = today;
     data.wateredToday = true;

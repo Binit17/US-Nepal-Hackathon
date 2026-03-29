@@ -119,14 +119,45 @@
 
             <!-- Plant Growth Card -->
             <div class="plant-card" id="plant-card">
-              <div class="plant-visual" id="plant-visual">
-                <div class="plant-emoji" id="plant-emoji">🪴</div>
-                <div class="plant-water-ripple" id="plant-ripple"></div>
+              <div class="plant-scene" id="plant-scene">
+                <!-- CSS illustrated plant -->
+                <div class="plant-illustration" id="plant-illustration">
+                  <!-- Stage 5: top flowers (day 14+) -->
+                  <div class="p-flower p-flower-top stage-5-el">
+                    <div class="p-petal"></div><div class="p-petal"></div>
+                    <div class="p-petal"></div><div class="p-petal"></div>
+                    <div class="p-petal"></div><div class="p-center"></div>
+                  </div>
+                  <!-- Stage 4: side buds (day 7+) -->
+                  <div class="p-bud p-bud-left stage-4-el"></div>
+                  <div class="p-bud p-bud-right stage-4-el"></div>
+                  <!-- Stage 3: upper leaves (day 4+) -->
+                  <div class="p-leaf p-leaf-ul stage-3-el"></div>
+                  <div class="p-leaf p-leaf-ur stage-3-el"></div>
+                  <!-- Stage 2: mid leaves (day 2+) -->
+                  <div class="p-leaf p-leaf-ml stage-2-el"></div>
+                  <div class="p-leaf p-leaf-mr stage-2-el"></div>
+                  <!-- Stage 1: stem always visible -->
+                  <div class="p-stem" id="p-stem"></div>
+                  <!-- Stage 1: seed leaves -->
+                  <div class="p-leaf p-leaf-sl stage-1-el"></div>
+                  <div class="p-leaf p-leaf-sr stage-1-el"></div>
+                  <!-- Water ripple -->
+                  <div class="plant-water-ripple" id="plant-ripple"></div>
+                </div>
+                <!-- Pot with Dhaka pattern -->
+                <div class="plant-pot-wrap">
+                  <div class="plant-pot-rim"></div>
+                  <div class="plant-pot-body">
+                    <div class="dhaka-pot-pattern"></div>
+                  </div>
+                </div>
               </div>
               <div class="plant-info">
                 <div class="plant-name" id="plant-name">Your Saathi Plant</div>
                 <div class="plant-stage" id="plant-stage">Growing strong 🌿</div>
                 <div class="plant-streak" id="plant-streak">🔥 4 day streak</div>
+                <div class="plant-next" id="plant-next">3 more days to bloom 🌸</div>
               </div>
               <button class="plant-water-btn" id="plant-water-btn" onclick="app.waterPlant()">
                 💧 Water Today
