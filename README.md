@@ -1,197 +1,136 @@
-<p align="center">
-  <img src="assets/icon.png" alt="Daily Logo" width="80" />
-</p>
+# Saathi (साथी)
 
-<h1 align="center">☀️ Daily</h1>
+**Your AI companion that actually listens — not just to your words, but to how you're really doing.**
 
-<p align="center">
-  <strong>AI-powered mental health companion with real-time multi-modal biomarker analysis</strong>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/badge/Gemini_2.0-Flash-blue?style=flat-square&logo=google" alt="Gemini" />
-  <img src="https://img.shields.io/badge/MediaPipe-Face_Landmarker-green?style=flat-square" alt="MediaPipe" />
-  <img src="https://img.shields.io/badge/Python-FastAPI-009688?style=flat-square&logo=fastapi" alt="FastAPI" />
-  <img src="https://img.shields.io/badge/Web_Audio-API-orange?style=flat-square" alt="Web Audio" />
-</p>
+Built for the US-Nepal Hackathon 2026.
 
 ---
 
-## 🎯 What is Daily?
+## What is Saathi?
 
-**Daily** is a proactive mental health iOS app prototype that uses **real-time facial emotion detection, vocal biomarker analysis, eye tracking, and AI-powered clinical analysis** to understand how you're _really_ feeling — not just what you type.
+Saathi means "companion" in Nepali, and that's exactly what this is. It's a mental health app prototype that tries to understand how you're feeling using real signals — your face, your voice, your eyes — not just what you type.
 
-Built during the **US-Nepal Hackathon 2026**, Daily demonstrates 5 key scenarios:
+A lot of mental health apps feel like filling out a form. Saathi is meant to feel more like talking to a friend who genuinely notices when something's off, even if you don't say it directly.
 
-| # | Scenario | Description |
-|---|----------|-------------|
-| 0 | 🔒 **Lock Screen Alert** | Smartwatch HRV spike triggers compassionate notification |
-| 1 | 🛡️ **Proactive Support** | Calendar + HRV data drives pre-meeting interventions |
-| 2 | 🎙️ **Multi-Modal Check-In** | **Real** camera + mic + AI analysis of emotions, voice, and eyes |
-| 3 | 🚨 **Safety Net & Recovery** | Crisis keyword detection + emergency resources |
-| 4 | 📊 **Weekly Insights** | Mood trends, HRV charts, and CBT cognitive distortion analysis |
-
-### ✨ The "Real" Part — Scenario 2
-
-Unlike the other demo scenarios, **Scenario 2 is fully functional**:
-
-- 📸 **Real camera feed** — live `getUserMedia` video
-- 🧠 **MediaPipe FaceLandmarker** — 52 facial blendshapes → 7 emotion scores in real-time
-- 🎵 **Vocal analysis** — Web Audio API computes jitter, shimmer, pitch (F0), and energy
-- 👁️ **Eye tracking** — blink rate (blinks/min) and gaze avoidance % from blendshapes
-- 📝 **Live speech-to-text** — browser SpeechRecognition API
-- 🤖 **Gemini AI analysis** — all biomarker data + transcript sent to backend for clinical insights
+We built this specifically with students and young professionals from Nepal in mind — the kind of stress that comes from family expectations, academic pressure, and trying to figure things out while being far from home.
 
 ---
 
-## 🚀 Quick Start
+## What it does
 
-### Prerequisites
+**Multi-modal check-in (Scenario 2 — this one actually works)**
 
-- **Python 3.10+**
-- **Google API Key** ([Get one here](https://aistudio.google.com/app/apikey))
-- **Chrome browser** (recommended for SpeechRecognition + MediaPipe GPU)
+You open the app, hit record, and just talk. While you're talking, the app is:
 
-### 1. Clone & Setup Backend
+- Watching your face (MediaPipe reads 52 facial landmarks and turns them into 7 emotion scores in real-time)
+- Listening to your voice (Web Audio API picks up jitter, shimmer, and pitch — subtle stress markers you can't fake)
+- Tracking your eyes (blink rate and gaze avoidance, which often show discomfort before words do)
+- Transcribing what you say (browser SpeechRecognition)
+
+All of that gets sent to Gemini 2.0 Flash, which writes a personalized journal entry summarizing what it observed and flags any patterns worth noting.
+
+**The other scenarios (demo flows)**
+
+- Lock screen HRV alert — simulates a smartwatch detecting a stress spike and reaching out before you even open the app
+- Pre-meeting check-in — uses calendar context + HRV data to offer a quick grounding exercise before something stressful
+- Crisis safety net — detects distress in language and surfaces emergency resources (Nepal helpline: 1166)
+- Weekly insights — mood trends, a burnout score, and a breakdown of cognitive patterns over time
+
+**Saathi the AI companion**
+
+There's a built-in chat companion named Saathi who uses CBT and motivational interviewing techniques but talks like a friend. It remembers things you've said earlier in the conversation and nudges you toward topics that matter to you — without making it feel like therapy.
+
+**The plant**
+
+Every time you check in, your plant grows. It's a small thing, but it makes consistency feel rewarding. The plant goes through 5 stages from seedling to full bloom, and the pot has a Dhaka textile pattern on it because we wanted Nepal to be visible in the design, not just mentioned in the description.
+
+**Nepal cultural context**
+
+When you tap certain stressor cards (family pressure, academic stress, etc.), the AI gets extra context about what that kind of stress actually means in a South Asian context. It's a small touch but it makes the responses feel less generic.
+
+---
+
+## How to run it
+
+You'll need Python 3.10+, a Google API key, and Chrome.
+
+**Get a Google API key:** https://aistudio.google.com/app/apikey
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/Daily.git
-cd Daily
+# Clone the repo
+git clone https://github.com/Poudel-Sanskriti/US-Nepal-Hackathon.git
+cd US-Nepal-Hackathon
 
-# Create Python virtual environment
+# Set up the backend
 cd backend
 python3 -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-
-# Install dependencies
+source venv/bin/activate
 pip install -r requirements.txt
 
-# Set your API key
+# Add your API key
 cp .env.example .env
-# Edit .env and add your GOOGLE_API_KEY
-```
+# Open .env and paste your GOOGLE_API_KEY
 
-### 2. Start the Backend
-
-```bash
-cd backend
-source venv/bin/activate
+# Start the backend
 uvicorn main:app --port 8000 --reload
 ```
-
-### 3. Serve the Frontend
 
 In a new terminal:
 
 ```bash
-cd Daily
+# Serve the frontend
 npx -y serve . -l 3456
 ```
 
-### 4. Open in Chrome
+Open Chrome and go to `http://localhost:3456`
 
-```
-http://localhost:3456
-```
-
-Navigate to **Scenario 2** → grant camera/mic → record → hit **"✨ Analyze with AI"**
+To see the live check-in: go to Scenario 2, allow camera and mic when prompted, hit record, talk for a bit, then tap **Analyze with AI**.
 
 ---
 
-## 🏗️ Architecture
+## Project structure
 
 ```
-Daily/
-├── index.html          # Single-page iOS prototype (all screens)
-├── app.js              # App logic + CheckInEngine (MediaPipe, Audio, Eye, Speech)
-├── styles.css          # iOS-inspired design system
+US-Nepal-Hackathon/
+├── index.html              # All screens in one file (iPhone frame demo)
+├── app.js                  # All the frontend logic — camera, audio, plant, AI calls
+├── styles.css              # Design system with Dhaka pattern accents
 ├── assets/
-│   └── icon.png        # App icon
+│   └── icon.png
 └── backend/
-    ├── main.py         # FastAPI app + /api/checkin/analyze endpoint
-    ├── gemini_client.py    # Gemini 2.0 Flash therapeutic AI
-    ├── models.py           # Pydantic data models
-    ├── risk_monitor.py     # Crisis keyword detection
-    ├── report_generator.py # Clinical report generation
+    ├── main.py             # FastAPI server
+    ├── gemini_client.py    # Saathi AI companion (trigger-aware, culturally informed)
+    ├── models.py           # Data models
+    ├── risk_monitor.py     # Crisis detection
+    ├── report_generator.py # Session summaries
+    ├── trigger_analyzer.py # Tracks emotional patterns across sessions
     ├── distortion_analyzer.py  # CBT cognitive distortion detection
-    ├── trigger_analyzer.py     # Emotional trigger pattern analysis
-    ├── requirements.txt
-    └── .env.example
-```
-
-### Multi-Modal Data Flow
-
-```
-┌─────────────┐    ┌───────────────┐    ┌─────────────────┐
-│   Camera    │───▶│  MediaPipe    │───▶│  Emotion Scores  │
-│  (Video)    │    │  FaceLandmark │    │  (7 emotions)    │
-└─────────────┘    └───────────────┘    └────────┬────────┘
-                                                  │
-┌─────────────┐    ┌───────────────┐    ┌────────▼────────┐
-│ Microphone  │───▶│  Web Audio    │───▶│  Vocal Metrics   │
-│  (Audio)    │    │  AnalyserNode │    │  (jitter/shimmer) │
-└─────────────┘    └───────────────┘    └────────┬────────┘
-                                                  │
-┌─────────────┐    ┌───────────────┐    ┌────────▼────────┐    ┌──────────┐
-│  Blendshapes│───▶│  Oculomotor   │───▶│  Eye Metrics     │───▶│  Gemini  │
-│  (from MP)  │    │  Tracker      │    │  (blink/gaze)    │    │  2.0     │
-└─────────────┘    └───────────────┘    └────────┬────────┘    │  Flash   │
-                                                  │             │          │
-┌─────────────┐    ┌───────────────┐    ┌────────▼────────┐    │  ┌─────┐ │
-│  Browser    │───▶│  Speech       │───▶│  Transcript      │───▶│  │ AI  │ │
-│  Mic Input  │    │  Recognition  │    │  (live text)     │    │  │Anal.│ │
-└─────────────┘    └───────────────┘    └─────────────────┘    └──┴─────┘─┘
+    └── requirements.txt
 ```
 
 ---
 
-## 🛡️ API Endpoints
+## Tech stack
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `POST` | `/api/checkin/analyze` | Single-call check-in analysis (transcript + biomarkers → AI analysis) |
-| `POST` | `/api/sessions` | Create therapy session |
-| `POST` | `/api/sessions/{id}/chat` | Send message with biomarker context |
-| `POST` | `/api/sessions/{id}/end` | End session |
-| `GET` | `/api/sessions/{id}/report` | Generate clinical report |
-| `GET` | `/api/health` | Health check |
+- **Google Gemini 2.0 Flash** — the AI brain behind both the check-in analysis and the companion chat
+- **MediaPipe FaceLandmarker** — facial emotion detection, runs in-browser
+- **Web Audio API** — extracts vocal stress biomarkers from mic input
+- **SpeechRecognition API** — live transcription (works best in Chrome)
+- **FastAPI** — lightweight async Python backend
+- **Vanilla JS** — no frameworks, just plain JavaScript
 
 ---
 
-## 🔑 Environment Variables
+## The demo
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `GOOGLE_API_KEY` | Google AI Studio API key for Gemini 2.0 | ✅ |
+The prototype is designed to run as a phone screen inside a browser — you'll see an iPhone-style frame. Use Chrome for the full experience (Firefox doesn't support SpeechRecognition, Safari has partial MediaPipe support).
 
----
-
-## ⚠️ Browser Compatibility
-
-| Feature | Chrome | Firefox | Safari | Edge |
-|---------|--------|---------|--------|------|
-| Camera/Mic | ✅ | ✅ | ✅ | ✅ |
-| MediaPipe GPU | ✅ | ⚠️ CPU | ❌ | ✅ |
-| SpeechRecognition | ✅ | ❌ | ⚠️ | ✅ |
-| Full experience | ✅ | ⚠️ Partial | ⚠️ Partial | ✅ |
-
-**Chrome is strongly recommended** for the full multi-modal experience.
+The camera and mic need browser permission. If you see a "Camera access required" message, click the lock icon in your browser's address bar and allow both.
 
 ---
 
-## 🏆 Built for US-Nepal Hackathon 2026
+## Team
 
-**Team**: Binit KC
+**Binit KC** and **Sanskriti Poudel**
 
-**Key Technologies**:
-- Google Gemini 2.0 Flash — AI therapeutic analysis
-- MediaPipe FaceLandmarker — real-time facial emotion detection
-- Web Audio API — vocal biomarker extraction
-- FastAPI — async Python backend
-- Vanilla JS — zero-dependency frontend
-
----
-
-## 📄 License
-
-MIT License — feel free to build on this!
+US-Nepal Hackathon 2026
